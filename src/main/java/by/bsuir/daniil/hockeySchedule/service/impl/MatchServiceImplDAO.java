@@ -1,51 +1,48 @@
 package by.bsuir.daniil.hockeySchedule.service.impl;
 
 import by.bsuir.daniil.hockeySchedule.model.Match;
-import by.bsuir.daniil.hockeySchedule.repository.MatchRepository;
+import by.bsuir.daniil.hockeySchedule.repository.MatchRepositoryDAO;
 import by.bsuir.daniil.hockeySchedule.service.MatchService;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Primary
 @Service
 @AllArgsConstructor
-public class MatchServiceImpl implements MatchService {
+public class MatchServiceImplDAO implements MatchService{
 
-    private final MatchRepository repository;
+    private final MatchRepositoryDAO repository;
+
     @Override
     public List<Match> getAllMatches() {
-        return repository.findAll();
+        return repository.getAllMatches();
     }
 
     @Override
     public Match addMatch(Match newMatch) {
-        return repository.save(newMatch);
+        return repository.addMatch(newMatch);
     }
 
     @Override
     public boolean deleteMatch(Match delMatch) {
-        repository.delete(delMatch);
-        return true;
+        return repository.deleteMatch(delMatch);
     }
 
     @Override
     public List<Match> findByDate(ZonedDateTime date) {
-//        repository.
-        return null;
+        return repository.findByDate(date);
     }
 
     @Override
     public List<Match> findByTeam(String team) {
-        return repository.findByAwayTeamOrHostTeam(team,team);
+        return repository.findByTeam(team);
     }
 
     @Override
     public Optional<Match> findById(Integer id) {
-        return repository.findById(id);
+        return null;
     }
 }

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -21,7 +22,7 @@ public class MatchController {
     }
 
     @GetMapping("/{id}")
-    public Match findById(@PathVariable String id){
+    public Optional<Match> findById(@PathVariable String id){
         //        if (match != null)
 
         return matchService.findById(Integer.parseInt(id));
@@ -39,8 +40,8 @@ public class MatchController {
         return "Element not found";
     }
 
-    @GetMapping("/findByTeam/{team}")
-    public List<Match> findByTeam(@PathVariable String team){
+    @GetMapping("/findByTeam")
+    public List<Match> findByTeam(@RequestParam String team){
         return matchService.findByTeam(team);
     }
 }

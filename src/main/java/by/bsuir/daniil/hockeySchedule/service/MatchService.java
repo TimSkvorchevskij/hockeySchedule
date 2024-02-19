@@ -3,8 +3,8 @@ package by.bsuir.daniil.hockeySchedule.service;
 import by.bsuir.daniil.hockeySchedule.model.Match;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface MatchService {
 
@@ -16,5 +16,5 @@ public interface MatchService {
 
     List<Match> findByTeam(String team);
 
-    Match findById(Integer id);
+    Optional<Match> findById(Integer id);
 }
