@@ -35,8 +35,7 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public List<Match> findByDate(ZonedDateTime date) {
-//        repository.
-        return null;
+        return repository.findAll();
     }
 
     @Override
