@@ -1,6 +1,6 @@
-package by.bsuir.daniil.hockeySchedule.service;
+package by.bsuir.daniil.hockey_schedule.service;
 
-import by.bsuir.daniil.hockeySchedule.model.Match;
+import by.bsuir.daniil.hockey_schedule.model.Match;
 
 import java.time.ZonedDateTime;
 import java.util.List;

@@ -1,4 +1,4 @@
-package by.bsuir.daniil.hockeySchedule;
+package by.bsuir.daniil.hockey_schedule;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package by.bsuir.daniil.hockeySchedule;
+package by.bsuir.daniil.hockey_schedule;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

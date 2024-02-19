@@ -1,4 +1,4 @@
-package by.bsuir.daniil.hockeySchedule.model;
+package by.bsuir.daniil.hockey_schedule.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,5 +19,4 @@ public class Match {
     private String city;
     private ZonedDateTime dateTime;
 
-//    private GameStats gameStats;
 }

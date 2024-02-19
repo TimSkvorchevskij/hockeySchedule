@@ -1,8 +1,8 @@
-package by.bsuir.daniil.hockeySchedule.controllers;
+package by.bsuir.daniil.hockey_schedule.controllers;
 
 
-import by.bsuir.daniil.hockeySchedule.model.Match;
-import by.bsuir.daniil.hockeySchedule.service.MatchService;
+import by.bsuir.daniil.hockey_schedule.model.Match;
+import by.bsuir.daniil.hockey_schedule.service.MatchService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +23,6 @@ public class MatchController {
 
     @GetMapping("/{id}")
     public Optional<Match> findById(@PathVariable String id){
-        //        if (match != null)
-
         return matchService.findById(Integer.parseInt(id));
     }
 
