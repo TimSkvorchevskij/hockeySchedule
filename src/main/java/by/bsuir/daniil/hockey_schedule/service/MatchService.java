@@ -11,7 +11,7 @@ public interface MatchService {
     List<Match> getAllMatches();
     Match addMatch(Match newMatch);
 
-    boolean deleteMatch(Match delMatch);
+    String deleteMatch(Integer delMatch_id);
     List<Match> findByDate(ZonedDateTime date);
 
     List<Match> findByTeam(String team);

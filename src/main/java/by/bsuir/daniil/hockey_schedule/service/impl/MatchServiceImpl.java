@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Primary
 @Service
 @AllArgsConstructor
 public class MatchServiceImpl implements MatchService {
@@ -28,9 +27,9 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public boolean deleteMatch(Match delMatch) {
-        repository.delete(delMatch);
-        return true;
+    public String deleteMatch(Integer delMatch_id) {
+        repository.deleteById(delMatch_id);
+        return "Successfully";
     }
 
     @Override

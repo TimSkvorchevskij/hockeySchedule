@@ -1,6 +1,5 @@
 package by.bsuir.daniil.hockey_schedule.controllers;
 
-
 import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.service.MatchService;
 import lombok.AllArgsConstructor;
@@ -32,14 +31,13 @@ public class MatchController {
     }
 
     @DeleteMapping("/delete")
-    public String deleteMatch(@RequestBody Match match){
-        if (matchService.deleteMatch(match))
-            return "Delete Successfully";
-        return "Element not found";
+    public String deleteMatch(@RequestParam Integer match_id){
+        return matchService.deleteMatch(match_id);
     }
 
     @GetMapping("/findByTeam")
     public List<Match> findByTeam(@RequestParam String team){
         return matchService.findByTeam(team);
     }
+
 }
