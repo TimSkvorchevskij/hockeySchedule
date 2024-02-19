@@ -31,8 +31,8 @@ public class MatchController {
     }
 
     @DeleteMapping("/delete")
-    public String deleteMatch(@RequestParam Integer match_id){
-        return matchService.deleteMatch(match_id);
+    public String deleteMatch(@RequestParam Integer matchId){
+        return matchService.deleteMatch(matchId);
     }
 
     @GetMapping("/findByTeam")

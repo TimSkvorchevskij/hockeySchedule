@@ -27,8 +27,8 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public String deleteMatch(Integer delMatch_id) {
-        repository.deleteById(delMatch_id);
+    public String deleteMatch(Integer delMatchId) {
+        repository.deleteById(delMatchId);
         return "Successfully";
     }
 
