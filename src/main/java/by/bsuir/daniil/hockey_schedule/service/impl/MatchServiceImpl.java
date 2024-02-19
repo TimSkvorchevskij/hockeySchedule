@@ -4,7 +4,6 @@ import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.repository.MatchRepository;
 import by.bsuir.daniil.hockey_schedule.service.MatchService;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
