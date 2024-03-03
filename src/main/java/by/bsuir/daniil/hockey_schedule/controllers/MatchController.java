@@ -40,4 +40,8 @@ public class MatchController {
         return matchService.findByTeam(team);
     }
 
+    @PutMapping("/setArena")
+    public Match setNewArenaId(@RequestParam Integer matchId, @RequestParam Integer newArenaId){
+        return matchService.setNewArena(matchId,newArenaId);
+    }
 }
