@@ -14,7 +14,6 @@ import java.util.Optional;
 public class MatchController {
 
     private MatchService matchService;
-
     @GetMapping
     public List<Match> getAllMatches(){
         return matchService.getAllMatches();
