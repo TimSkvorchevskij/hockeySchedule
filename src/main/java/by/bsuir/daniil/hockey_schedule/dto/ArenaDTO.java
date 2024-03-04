@@ -6,7 +6,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-//@AllArgsConstructor
 public class ArenaDTO {
     Integer arenaId;
     String city;

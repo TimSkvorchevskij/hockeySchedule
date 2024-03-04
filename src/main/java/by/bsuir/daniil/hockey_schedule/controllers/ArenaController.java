@@ -1,23 +1,21 @@
 package by.bsuir.daniil.hockey_schedule.controllers;
 
-import by.bsuir.daniil.hockey_schedule.dto.ArenaDTO;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.service.ArenaService;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/v2/arena")
+@RequestMapping("api/v1/arena")
 public class ArenaController {
 
     private ArenaService arenaService;
 
     @GetMapping
-    public List<ArenaDTO> getAllArenas(){
+    public List<Arena> getAllArenas(){
         return arenaService.getAllArenas();
     }
     @GetMapping("/{id}")
@@ -36,7 +34,9 @@ public class ArenaController {
     }
 
     @PutMapping("/change")
-    public Arena upload(@RequestParam Integer id, @RequestBody Arena arena){
-        return arenaService.upload(id,arena);
+    public Arena update(@RequestParam Integer arenaId,
+                        @RequestParam(required = false) String city,
+                        @RequestParam(required = false) Integer capacity){
+        return arenaService.update(arenaId, city,capacity);
     }
 }

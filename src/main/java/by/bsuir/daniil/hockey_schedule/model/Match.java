@@ -1,9 +1,6 @@
 package by.bsuir.daniil.hockey_schedule.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.ZonedDateTime;
@@ -17,18 +14,18 @@ public class Match {
     @Column(unique = true)
     private Integer matchId;
 
-    @ManyToMany
+    private ZonedDateTime dateTime;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.DETACH,CascadeType.REFRESH},
+    fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("matchList")
     @JoinTable(name = "match_team",
-    joinColumns = @JoinColumn(name = "matchId"),
-    inverseJoinColumns = @JoinColumn(name = "teamId"))
+            joinColumns = @JoinColumn(name = "matchId"),
+            inverseJoinColumns = @JoinColumn(name = "teamId"))
     private List<Team> teamList;
 
-    private ZonedDateTime dateTime;
     @ManyToOne
     @JoinColumn(name = "arenaId")
-//    @JsonIgnore
-//    @JsonBackReference
-//    @JsonManagedReference
     @JsonIgnoreProperties("matchList")
     private Arena arena;
 }

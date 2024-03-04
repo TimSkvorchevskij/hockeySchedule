@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/matches")
+@RequestMapping("/api/v1/match")
 public class MatchController {
 
     private MatchService matchService;
@@ -33,11 +33,6 @@ public class MatchController {
     @DeleteMapping("/delete")
     public String deleteMatch(@RequestParam Integer matchId){
         return matchService.deleteMatch(matchId);
-    }
-
-    @GetMapping("/findByTeam")
-    public List<Match> findByTeam(@RequestParam String team){
-        return matchService.findByTeam(team);
     }
 
     @PutMapping("/setArena")

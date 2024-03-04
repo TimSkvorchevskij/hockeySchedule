@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface MatchRepository extends JpaRepository<Match, Integer> {
 
-    List<Match> findByAwayTeamOrHostTeam(String awayTeam, String hostTeam);
+
 }

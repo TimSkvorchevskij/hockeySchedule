@@ -1,7 +1,7 @@
 package by.bsuir.daniil.hockey_schedule.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 
 import java.util.List;
@@ -12,6 +12,8 @@ public class Team {
     @Id
     @Column(unique = true)
     private Integer teamId;
-    @ManyToMany(mappedBy = "teamList")
+    private String teamName;
+    @JsonIgnoreProperties("teamList")
+    @ManyToMany(mappedBy = "teamList", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     private List<Match> matchList;
 }
