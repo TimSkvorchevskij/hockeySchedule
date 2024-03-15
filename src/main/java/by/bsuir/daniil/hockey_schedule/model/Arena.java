@@ -10,8 +10,8 @@ import java.util.List;
 @Table(name = "arenas")
 public class Arena {
     @Id
-    @Column(unique = true)
-    Integer arenaId;
+    @GeneratedValue
+    Integer id;
     String city;
     Integer capacity;
     @JsonIgnoreProperties("arena")

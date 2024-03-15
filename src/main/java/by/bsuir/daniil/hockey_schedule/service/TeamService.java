@@ -1,11 +1,14 @@
 package by.bsuir.daniil.hockey_schedule.service;
 
+import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
+import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTO;
 import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.model.Team;
 import by.bsuir.daniil.hockey_schedule.repository.MatchRepository;
 import by.bsuir.daniil.hockey_schedule.repository.TeamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,15 +43,21 @@ public class TeamService {
             match.setTeamList(teamList);
             matchRepository.save(match);
         }
-        else if (!match.getTeamList().contains(team)){
+        else if (!match.getTeamList().contains(team) && match.getTeamList().size() < 2){
             match.getTeamList().add(team);
                 matchRepository.save(match);
         }
         return teamRepository.findById(teamId).orElse(null);
     }
 
-    public List<Team> getAllTeams(){
-        return teamRepository.findAll();
+    @Transactional
+    public List<TeamDTO> getAllTeams(){
+//        return teamRepository.findAll();
+    List<TeamDTO> teamDTOList = new ArrayList<>();
+    for(Team team: teamRepository.findAll()){
+        teamDTOList.add(ConvertDTOClasses.convertToTeamDTO(team));
+    }
+    return teamDTOList;
     }
 
     public Team delMatchInMatchList(Integer teamId, Integer matchId) {

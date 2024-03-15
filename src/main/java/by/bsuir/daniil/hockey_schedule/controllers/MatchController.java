@@ -1,5 +1,6 @@
 package by.bsuir.daniil.hockey_schedule.controllers;
 
+import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithTeamAndArena;
 import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.service.MatchService;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ public class MatchController {
 
     private MatchService matchService;
     @GetMapping
-    public List<Match> getAllMatches(){
+    public List<MatchDTOWithTeamAndArena> getAllMatches(){
         return matchService.getAllMatches();
     }
 

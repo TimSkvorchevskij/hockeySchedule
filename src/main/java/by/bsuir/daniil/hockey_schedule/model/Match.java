@@ -11,8 +11,8 @@ import java.util.List;
 @Table(name = "matches")
 public class Match {
     @Id
-    @Column(unique = true)
-    private Integer matchId;
+    @GeneratedValue
+    private Integer id;
 
     private ZonedDateTime dateTime;
 
@@ -25,7 +25,7 @@ public class Match {
     private List<Team> teamList;
 
     @ManyToOne
-    @JoinColumn(name = "arenaId")
+    @JoinColumn(name = "matchId")
     @JsonIgnoreProperties("matchList")
     private Arena arena;
 }

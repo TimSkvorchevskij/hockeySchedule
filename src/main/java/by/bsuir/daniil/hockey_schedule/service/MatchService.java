@@ -1,5 +1,7 @@
 package by.bsuir.daniil.hockey_schedule.service;
 
+import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
+import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithTeamAndArena;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.model.Team;
@@ -8,7 +10,9 @@ import by.bsuir.daniil.hockey_schedule.repository.MatchRepository;
 import by.bsuir.daniil.hockey_schedule.repository.TeamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,13 +23,23 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final ArenaRepository arenaRepository;
     private final TeamRepository teamRepository;
-    public List<Match> getAllMatches() {
-        return matchRepository.findAll();
+    @Transactional
+    public List<MatchDTOWithTeamAndArena> getAllMatches() {
+//        return matchRepository.findAll();
+        List<MatchDTOWithTeamAndArena> matchDTOWithTeamAndArenaList = new ArrayList<>();
+        for (Match match : matchRepository.findAll()) {
+            matchDTOWithTeamAndArenaList.add(ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
+        }
+        return matchDTOWithTeamAndArenaList;
     }
 
+    @Transactional
     public Match addMatch(Match newMatch) {
         if (newMatch.getTeamList() != null) {
             List<Team> teamList = newMatch.getTeamList();
+            if (teamList.size() > 2) {
+                throw new IllegalStateException("max 2 team");
+            }
             teamRepository.saveAll(teamList);
         }
         if (newMatch.getArena() != null){

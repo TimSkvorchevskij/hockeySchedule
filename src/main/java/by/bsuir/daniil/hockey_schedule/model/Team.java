@@ -10,8 +10,9 @@ import java.util.List;
 @Table(name = "team")
 public class Team {
     @Id
+    @GeneratedValue
     @Column(unique = true)
-    private Integer teamId;
+    private Integer id;
     private String teamName;
     @JsonIgnoreProperties("teamList")
     @ManyToMany(mappedBy = "teamList", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})

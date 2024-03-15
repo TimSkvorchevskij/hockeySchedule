@@ -1,12 +1,16 @@
 package by.bsuir.daniil.hockey_schedule.service;
 
 
+import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
+import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTOWithMatch;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.repository.ArenaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,8 +19,13 @@ public class ArenaService {
 
     private ArenaRepository arenaRepository;
 
-    public List<Arena> getAllArenas() {
-        return arenaRepository.findAll();
+    @Transactional
+    public List<ArenaDTOWithMatch> getAllArenas() {
+        List<ArenaDTOWithMatch> arenaDTOWithMatchList = new ArrayList<>();
+        for(Arena arena: arenaRepository.findAll()){
+            arenaDTOWithMatchList.add(ConvertDTOClasses.convertToArenaDTOWithTeam(arena));
+        }
+        return arenaDTOWithMatchList;
     }
 
     public Arena getArenaById(Integer arenaId){
