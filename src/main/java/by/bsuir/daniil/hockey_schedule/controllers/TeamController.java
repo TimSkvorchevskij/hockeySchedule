@@ -1,6 +1,7 @@
 package by.bsuir.daniil.hockey_schedule.controllers;
 
 import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTO;
+import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTOWithMatch;
 import by.bsuir.daniil.hockey_schedule.model.Team;
 import by.bsuir.daniil.hockey_schedule.service.TeamService;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class TeamController {
     }
 
     @PostMapping("/create")
-    public Team addTeam(@RequestBody Team newTeam){
+    public TeamDTO addTeam(@RequestBody Team newTeam){
         return teamService.addTeam(newTeam);
     }
 
@@ -31,12 +32,12 @@ public class TeamController {
     }
 
     @PutMapping("/addMatch")
-    public Team addInMatchList(@RequestParam Integer teamId,@RequestParam Integer matchId){
+    public TeamDTOWithMatch addInMatchList(@RequestParam Integer teamId, @RequestParam Integer matchId){
         return teamService.addMatchInMatchList(teamId, matchId);
     }
 
     @PutMapping("/delMatch")
-    public Team delInMatchList(@RequestParam Integer teamId,@RequestParam Integer matchId){
+    public TeamDTO delInMatchList(@RequestParam Integer teamId,@RequestParam Integer matchId){
         return teamService.delMatchInMatchList(teamId, matchId);
     }
 }

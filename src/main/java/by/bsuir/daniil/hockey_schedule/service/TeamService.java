@@ -2,11 +2,13 @@ package by.bsuir.daniil.hockey_schedule.service;
 
 import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
 import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTO;
+import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTOWithMatch;
 import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.model.Team;
 import by.bsuir.daniil.hockey_schedule.repository.MatchRepository;
 import by.bsuir.daniil.hockey_schedule.repository.TeamRepository;
 import lombok.AllArgsConstructor;
+import org.hibernate.type.ConvertedBasicType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +21,8 @@ public class TeamService {
     private TeamRepository teamRepository;
     private MatchRepository matchRepository;
 
-    public Team addTeam(Team newTeam){
-        return teamRepository.save(newTeam);
+    public TeamDTO addTeam(Team newTeam){
+        return ConvertDTOClasses.convertToTeamDTO(newTeam);
     }
 
     public String deleteTeam(Integer id){
@@ -34,7 +36,7 @@ public class TeamService {
         return "All Good";
     }
 
-    public Team addMatchInMatchList(Integer teamId, Integer matchId) {
+    public TeamDTOWithMatch addMatchInMatchList(Integer teamId, Integer matchId) {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new IllegalStateException("team with id: " + teamId + "doesn't exist"));
         Match match = matchRepository.findById(matchId).orElseThrow(() -> new IllegalStateException("match with id: " + matchId + "doesnt exist"));
         if (match.getTeamList().isEmpty()){
@@ -47,12 +49,11 @@ public class TeamService {
             match.getTeamList().add(team);
                 matchRepository.save(match);
         }
-        return teamRepository.findById(teamId).orElse(null);
+        return ConvertDTOClasses.convertToTeamDTOWithMatch(teamRepository.findById(teamId).orElse(null));
     }
 
     @Transactional
     public List<TeamDTO> getAllTeams(){
-//        return teamRepository.findAll();
     List<TeamDTO> teamDTOList = new ArrayList<>();
     for(Team team: teamRepository.findAll()){
         teamDTOList.add(ConvertDTOClasses.convertToTeamDTO(team));
@@ -60,12 +61,12 @@ public class TeamService {
     return teamDTOList;
     }
 
-    public Team delMatchInMatchList(Integer teamId, Integer matchId) {
+    public TeamDTO delMatchInMatchList(Integer teamId, Integer matchId) {
         Match match = matchRepository.findById(matchId).orElseThrow(() -> new IllegalStateException("Match doesnt exist"));
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new IllegalStateException("team doesnt exist"));
         if (match.getTeamList().remove(team)) {
             matchRepository.save(match);
         }
-        return teamRepository.findById(teamId).orElse(null);
+        return ConvertDTOClasses.convertToTeamDTO(teamRepository.findById(teamId).orElse(null));
     }
 }

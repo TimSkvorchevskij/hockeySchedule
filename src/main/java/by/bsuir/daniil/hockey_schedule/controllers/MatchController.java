@@ -1,5 +1,6 @@
 package by.bsuir.daniil.hockey_schedule.controllers;
 
+import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithArena;
 import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithTeamAndArena;
 import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.service.MatchService;
@@ -21,12 +22,12 @@ public class MatchController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Match> findById(@PathVariable String id){
+    public MatchDTOWithTeamAndArena findById(@PathVariable String id){
         return matchService.findById(Integer.parseInt(id));
     }
 
     @PostMapping("/create")
-    public Match addMatch(@RequestBody Match match){
+    public MatchDTOWithTeamAndArena addMatch(@RequestBody Match match){
         return matchService.addMatch(match);
     }
 
@@ -36,7 +37,7 @@ public class MatchController {
     }
 
     @PutMapping("/setArena")
-    public Match setNewArenaId(@RequestParam Integer matchId, @RequestParam Integer newArenaId){
+    public MatchDTOWithArena setNewArenaId(@RequestParam Integer matchId, @RequestParam Integer newArenaId){
         return matchService.setNewArena(matchId,newArenaId);
     }
 }

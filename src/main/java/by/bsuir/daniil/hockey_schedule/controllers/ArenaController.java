@@ -1,5 +1,6 @@
 package by.bsuir.daniil.hockey_schedule.controllers;
 
+import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTO;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTOWithMatch;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.service.ArenaService;
@@ -20,7 +21,7 @@ public class ArenaController {
         return arenaService.getAllArenas();
     }
     @GetMapping("/{id}")
-    public Arena getArenaById(@PathVariable Integer id){
+    public ArenaDTO getArenaById(@PathVariable Integer id){
         return arenaService.getArenaById(id);
     }
 
@@ -35,7 +36,7 @@ public class ArenaController {
     }
 
     @PutMapping("/change")
-    public Arena update(@RequestParam Integer arenaId,
+    public ArenaDTO update(@RequestParam Integer arenaId,
                         @RequestParam(required = false) String city,
                         @RequestParam(required = false) Integer capacity){
         return arenaService.update(arenaId, city,capacity);

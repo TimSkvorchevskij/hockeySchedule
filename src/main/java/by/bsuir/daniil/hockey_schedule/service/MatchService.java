@@ -1,6 +1,7 @@
 package by.bsuir.daniil.hockey_schedule.service;
 
 import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
+import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithArena;
 import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithTeamAndArena;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.model.Match;
@@ -34,7 +35,7 @@ public class MatchService {
     }
 
     @Transactional
-    public Match addMatch(Match newMatch) {
+    public MatchDTOWithTeamAndArena addMatch(Match newMatch) {
         if (newMatch.getTeamList() != null) {
             List<Team> teamList = newMatch.getTeamList();
             if (teamList.size() > 2) {
@@ -45,21 +46,21 @@ public class MatchService {
         if (newMatch.getArena() != null){
             arenaRepository.save(newMatch.getArena());
         }
-        return matchRepository.save(newMatch);
+        return ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.save(newMatch));
     }
 
     public String deleteMatch(Integer delMatchId) {
         matchRepository.deleteById(delMatchId);
         return "Successfully";
     }
-    public Match setNewArena(Integer matchId,Integer newArenaId) {
+    public MatchDTOWithArena setNewArena(Integer matchId, Integer newArenaId) {
         Match match = matchRepository.findById(matchId).orElseThrow(() -> new IllegalStateException("match with id: " + matchId + " doesn't exist"));
         Arena arena = arenaRepository.findById(newArenaId).orElseThrow(() -> new IllegalStateException("arena with id: " + newArenaId + " doesnt exist"));
         match.setArena(arena);
-        return matchRepository.save(match);
+        return ConvertDTOClasses.convertToMatchDTOWithArena(matchRepository.save(match));
     }
 
-    public Optional<Match> findById(Integer id) {
-        return matchRepository.findById(id);
+    public MatchDTOWithTeamAndArena findById(Integer id) {
+        return ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.findById(id).orElse(null));
     }
 }

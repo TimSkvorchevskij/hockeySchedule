@@ -2,6 +2,7 @@ package by.bsuir.daniil.hockey_schedule.service;
 
 
 import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
+import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTO;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTOWithMatch;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.model.Match;
@@ -28,8 +29,8 @@ public class ArenaService {
         return arenaDTOWithMatchList;
     }
 
-    public Arena getArenaById(Integer arenaId){
-        return arenaRepository.findById(arenaId).orElse(null);
+    public ArenaDTO getArenaById(Integer arenaId){
+        return ConvertDTOClasses.convertToArenaDTO(arenaRepository.findById(arenaId).orElse(null));
     }
 
     public String createArena(Arena arena){
@@ -47,7 +48,7 @@ public class ArenaService {
         return "All good";
     }
 
-    public Arena update(Integer arenaId, String city, Integer capacity){
+    public ArenaDTO update(Integer arenaId, String city, Integer capacity){
         Arena arena = arenaRepository.findById(arenaId).orElseThrow(() -> new IllegalStateException("Arena with id: " + arenaId + " doesn't exist!"));
         if (city != null && !city.isEmpty()){
             arena.setCity(city);
@@ -55,6 +56,6 @@ public class ArenaService {
         if (capacity != null){
             arena.setCapacity(capacity);
         }
-        return arenaRepository.save(arena);
+        return ConvertDTOClasses.convertToArenaDTO(arenaRepository.save(arena));
     }
 }
