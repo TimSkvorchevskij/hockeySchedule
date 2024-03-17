@@ -20,6 +20,14 @@ public class ArenaController {
     public List<ArenaDTOWithMatch> getAllArenas(){
         return arenaService.getAllArenas();
     }
+
+    @GetMapping("/search/capacity")
+    public List<ArenaDTO> getArenaByCapacity(@RequestParam(value = "moreThan", required = false) Integer minValue,
+                                                      @RequestParam(value = "lessThan", required = false) Integer maxValue){
+        return arenaService.getArenaByCapacity(minValue, maxValue);
+    }
+
+
     @GetMapping("/{id}")
     public ArenaDTO getArenaById(@PathVariable Integer id){
         return arenaService.getArenaById(id);

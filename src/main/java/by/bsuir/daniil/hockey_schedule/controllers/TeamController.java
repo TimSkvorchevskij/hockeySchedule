@@ -31,13 +31,13 @@ public class TeamController {
         return teamService.deleteTeam(teamId);
     }
 
-    @PutMapping("/addMatch")
-    public TeamDTOWithMatch addInMatchList(@RequestParam Integer teamId, @RequestParam Integer matchId){
-        return teamService.addMatchInMatchList(teamId, matchId);
-    }
+//    @PutMapping("/addMatch")
+//    public TeamDTOWithMatch addInMatchList(@RequestParam Integer teamId, @RequestParam Integer matchId){
+//        return teamService.addMatchInMatchList(teamId, matchId);
+//    }
 
-    @PutMapping("/delMatch")
-    public TeamDTO delInMatchList(@RequestParam Integer teamId,@RequestParam Integer matchId){
-        return teamService.delMatchInMatchList(teamId, matchId);
-    }
+//    @PutMapping("/delMatch")
+//    public TeamDTO delInMatchList(@RequestParam Integer teamId,@RequestParam Integer matchId){
+//        return teamService.delMatchInMatchList(teamId, matchId);
+//    }
 }

@@ -36,4 +36,3 @@ build/
 .mvn
 mvnw
 mvnw.cmd
-**/src/main/java/by/bsuir/daniil/hockey_schedule/dto
