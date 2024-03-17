@@ -28,8 +28,10 @@ public class ConvertDTOClasses {
         arenaDTO.setCapacity(arena.getCapacity());
 
         List<MatchDTOWithTeam> matchDTOWithTeamList = new ArrayList<>();
-        for(Match match: arena.getMatchList()){
-            matchDTOWithTeamList.add(convertToMatchDTOWithTeam(match));
+        if (arena.getMatchList() != null) {
+            for (Match match : arena.getMatchList()) {
+                matchDTOWithTeamList.add(convertToMatchDTOWithTeam(match));
+            }
         }
         arenaDTO.setMatchDTOWithTeamList(matchDTOWithTeamList);
         return arenaDTO;
@@ -53,8 +55,10 @@ public class ConvertDTOClasses {
         matchDTOWithTeam.setId(match.getId());
         matchDTOWithTeam.setDateTime(match.getDateTime());
         List<TeamDTO> teamDTOList = new ArrayList<>();
-        for(Team team: match.getTeamList()){
-            teamDTOList.add(convertToTeamDTO(team));
+        if (match.getTeamList() != null) {
+            for (Team team : match.getTeamList()) {
+                teamDTOList.add(convertToTeamDTO(team));
+            }
         }
         matchDTOWithTeam.setTeamDTOList(teamDTOList);
         return matchDTOWithTeam;
@@ -68,8 +72,10 @@ public class ConvertDTOClasses {
         matchDTOWithTeamAndArena.setDateTime(match.getDateTime());
         matchDTOWithTeamAndArena.setArenaDTO(convertToArenaDTO(match.getArena()));
         List<TeamDTO> teamDTOList = new ArrayList<>();
-        for(Team team: match.getTeamList()){
-            teamDTOList.add(convertToTeamDTO(team));
+        if (match.getTeamList() != null){
+            for (Team team : match.getTeamList()) {
+                teamDTOList.add(convertToTeamDTO(team));
+            }
         }
         matchDTOWithTeamAndArena.setTeamDTOList(teamDTOList);
         return matchDTOWithTeamAndArena;
@@ -93,8 +99,10 @@ public class ConvertDTOClasses {
         teamDTO.setId(team.getId());
         teamDTO.setTeamName(team.getTeamName());
         List<MatchDTOWithArena> matchDTOWithArenaList = new ArrayList<>();
-        for(Match match: team.getMatchList()){
-            matchDTOWithArenaList.add(convertToMatchDTOWithArena(match));
+        if (team.getMatchList() != null) {
+            for (Match match : team.getMatchList()) {
+                matchDTOWithArenaList.add(convertToMatchDTOWithArena(match));
+            }
         }
         teamDTO.setMatchDTOWithArenaList(matchDTOWithArenaList);
         return teamDTO;

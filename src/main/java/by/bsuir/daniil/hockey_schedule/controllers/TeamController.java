@@ -17,10 +17,14 @@ public class TeamController {
     private TeamService teamService;
 
     @GetMapping
-    public List<TeamDTO> getAllTeams(){
+    public List<TeamDTOWithMatch> getAllTeams(){
         return teamService.getAllTeams();
     }
 
+    @GetMapping("/{id}")
+    public TeamDTO findById(@PathVariable Integer id){
+        return teamService.findTeamById(id);
+    }
     @PostMapping("/create")
     public TeamDTO addTeam(@RequestBody Team newTeam){
         return teamService.addTeam(newTeam);
@@ -31,13 +35,13 @@ public class TeamController {
         return teamService.deleteTeam(teamId);
     }
 
-//    @PutMapping("/addMatch")
-//    public TeamDTOWithMatch addInMatchList(@RequestParam Integer teamId, @RequestParam Integer matchId){
-//        return teamService.addMatchInMatchList(teamId, matchId);
-//    }
+    @PutMapping("/addMatch")
+    public TeamDTO addInMatchList(@RequestParam Integer teamId, @RequestParam Integer matchId){
+        return teamService.addMatchInMatchList(teamId, matchId);
+    }
 
-//    @PutMapping("/delMatch")
-//    public TeamDTO delInMatchList(@RequestParam Integer teamId,@RequestParam Integer matchId){
-//        return teamService.delMatchInMatchList(teamId, matchId);
-//    }
+    @PutMapping("/delMatch")
+    public TeamDTO delInMatchList(@RequestParam Integer teamId,@RequestParam Integer matchId){
+        return teamService.delMatchInMatchList(teamId, matchId);
+    }
 }

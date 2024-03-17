@@ -34,7 +34,7 @@ public class ArenaController {
     }
 
     @PostMapping("/create")
-    public String createArena(@RequestBody Arena arena){
+    public ArenaDTO createArena(@RequestBody Arena arena){
         return arenaService.createArena(arena);
     }
 
