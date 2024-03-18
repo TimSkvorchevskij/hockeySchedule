@@ -2,7 +2,7 @@ package by.bsuir.daniil.hockey_schedule.service;
 
 import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
 import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
-import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTO;
+
 import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithArena;
 import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithTeamAndArena;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+
 
 @Service
 @AllArgsConstructor
@@ -27,7 +28,9 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final ArenaRepository arenaRepository;
     private final TeamRepository teamRepository;
-    private final CacheManager cacheManager = CacheManager.getInstance();
+    private final CacheManager cacheManager;
+
+    private static final String MATCH_DTO = "matchDTOWithTeamAndArena_";
 
     @Transactional
     public List<MatchDTOWithTeamAndArena> getAllMatches() {
@@ -35,7 +38,7 @@ public class MatchService {
         for (Match match : matchRepository.findAll()) {
             MatchDTOWithTeamAndArena matchDTOWithTeamAndArena = ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match);
             matchDTOWithTeamAndArenaList.add(matchDTOWithTeamAndArena);
-            cacheManager.put("matchDTOWithTeamAndArena_" + match.getId().toString(), matchDTOWithTeamAndArena);
+            cacheManager.put(MATCH_DTO + match.getId().toString(), matchDTOWithTeamAndArena);
         }
         return matchDTOWithTeamAndArenaList;
     }
@@ -55,14 +58,14 @@ public class MatchService {
         }
         matchRepository.save(newMatch);
         MatchDTOWithTeamAndArena matchDTOWithTeamAndArena = ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.save(newMatch));
-        cacheManager.put("matchDTOWithTeamAndArena_" + newMatch.getId().toString(), matchDTOWithTeamAndArena);
+        cacheManager.put(MATCH_DTO + newMatch.getId().toString(), matchDTOWithTeamAndArena);
         return matchDTOWithTeamAndArena;
     }
 
     @Transactional
     public String deleteMatch(Integer delMatchId) {
         matchRepository.deleteById(delMatchId);
-        cacheManager.evict("matchDTOWithTeamAndArena_" + delMatchId.toString());
+        cacheManager.evict(MATCH_DTO + delMatchId.toString());
         return "Successfully";
     }
 
@@ -71,13 +74,13 @@ public class MatchService {
         Arena arena = arenaRepository.findById(newArenaId).orElseThrow(() -> new IllegalStateException("arena with id: " + newArenaId + " doesnt exist"));
         match.setArena(arena);
         matchRepository.save(match);
-        cacheManager.put("matchDTOWithTeamAndArena_" + matchId.toString(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
+        cacheManager.put(MATCH_DTO + matchId.toString(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
         return ConvertDTOClasses.convertToMatchDTOWithArena(match);
     }
 
     @Transactional
     public MatchDTOWithTeamAndArena findById(Integer id) {
-        Object cachedData = cacheManager.get("matchDTOWithTeamAndArena_" + id.toString());
+        Object cachedData = cacheManager.get(MATCH_DTO+ id.toString());
         if (cachedData != null) {
             return (MatchDTOWithTeamAndArena) cachedData;
         } else {
@@ -85,7 +88,7 @@ public class MatchService {
             if (matchDTOWithTeamAndArena == null) {
                 return null;
             } else {
-                cacheManager.put("matchDTOWithTeamAndArena_" + id.toString(), matchDTOWithTeamAndArena);
+                cacheManager.put(MATCH_DTO + id.toString(), matchDTOWithTeamAndArena);
             }
             return matchDTOWithTeamAndArena;
         }

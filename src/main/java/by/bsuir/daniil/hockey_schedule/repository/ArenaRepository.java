@@ -10,11 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ArenaRepository extends JpaRepository<Arena, Integer> {
-
-//    @Query
-//    List<Arena> findByCapacityBefore(Integer max);
-
-
     @Query("SELECT a FROM Arena a WHERE a.capacity <= :maxValue")
     List<Arena> findArenaByMaxCapacity(Integer maxValue);
     @Query("SELECT a FROM Arena a WHERE a.capacity >= :minValue")

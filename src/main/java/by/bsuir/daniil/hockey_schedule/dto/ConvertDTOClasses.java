@@ -18,8 +18,11 @@ import java.util.List;
 @Service
 public class ConvertDTOClasses {
 
-    static public ArenaDTOWithMatch convertToArenaDTOWithTeam(Arena arena){
-        if (arena == null){
+    private ConvertDTOClasses(){
+    }
+
+    public static ArenaDTOWithMatch convertToArenaDTOWithTeam(Arena arena) {
+        if (arena == null) {
             return null;
         }
         ArenaDTOWithMatch arenaDTO = new ArenaDTOWithMatch();
@@ -36,8 +39,9 @@ public class ConvertDTOClasses {
         arenaDTO.setMatchDTOWithTeamList(matchDTOWithTeamList);
         return arenaDTO;
     }
-    static public ArenaDTO convertToArenaDTO(Arena arena){
-        if (arena == null){
+
+    public static ArenaDTO convertToArenaDTO(Arena arena) {
+        if (arena == null) {
             return null;
         }
         ArenaDTO arenaDTO = new ArenaDTO();
@@ -47,8 +51,8 @@ public class ConvertDTOClasses {
         return arenaDTO;
     }
 
-    static public MatchDTOWithTeam convertToMatchDTOWithTeam(Match match){
-        if (match == null){
+    public static MatchDTOWithTeam convertToMatchDTOWithTeam(Match match) {
+        if (match == null) {
             return null;
         }
         MatchDTOWithTeam matchDTOWithTeam = new MatchDTOWithTeam();
@@ -63,8 +67,9 @@ public class ConvertDTOClasses {
         matchDTOWithTeam.setTeamDTOList(teamDTOList);
         return matchDTOWithTeam;
     }
-    static public MatchDTOWithTeamAndArena convertToMatchDTOWithTeamAndArena(Match match){
-        if (match == null){
+
+    public static MatchDTOWithTeamAndArena convertToMatchDTOWithTeamAndArena(Match match) {
+        if (match == null) {
             return null;
         }
         MatchDTOWithTeamAndArena matchDTOWithTeamAndArena = new MatchDTOWithTeamAndArena();
@@ -72,7 +77,7 @@ public class ConvertDTOClasses {
         matchDTOWithTeamAndArena.setDateTime(match.getDateTime());
         matchDTOWithTeamAndArena.setArenaDTO(convertToArenaDTO(match.getArena()));
         List<TeamDTO> teamDTOList = new ArrayList<>();
-        if (match.getTeamList() != null){
+        if (match.getTeamList() != null) {
             for (Team team : match.getTeamList()) {
                 teamDTOList.add(convertToTeamDTO(team));
             }
@@ -81,8 +86,8 @@ public class ConvertDTOClasses {
         return matchDTOWithTeamAndArena;
     }
 
-    static public TeamDTO convertToTeamDTO(Team team) {
-        if (team == null){
+    public static TeamDTO convertToTeamDTO(Team team) {
+        if (team == null) {
             return null;
         }
         TeamDTO teamDTO = new TeamDTO();
@@ -91,8 +96,8 @@ public class ConvertDTOClasses {
         return teamDTO;
     }
 
-    static public TeamDTOWithMatch convertToTeamDTOWithMatch(Team team) {
-        if (team == null){
+    public static TeamDTOWithMatch convertToTeamDTOWithMatch(Team team) {
+        if (team == null) {
             return null;
         }
         TeamDTOWithMatch teamDTO = new TeamDTOWithMatch();
@@ -108,7 +113,7 @@ public class ConvertDTOClasses {
         return teamDTO;
     }
 
-    static public MatchDTOWithArena convertToMatchDTOWithArena(Match match){
+    public static MatchDTOWithArena convertToMatchDTOWithArena(Match match) {
         MatchDTOWithArena matchDTOWithArena = new MatchDTOWithArena();
         matchDTOWithArena.setId(match.getId());
         matchDTOWithArena.setDateTime(match.getDateTime());

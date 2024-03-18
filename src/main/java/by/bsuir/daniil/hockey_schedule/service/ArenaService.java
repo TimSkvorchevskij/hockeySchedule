@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -23,8 +22,9 @@ import java.util.Objects;
 public class ArenaService {
 
     private final ArenaRepository arenaRepository;
-    private final CacheManager cacheManager = CacheManager.getInstance();
+    private final CacheManager cacheManager;
     private final MatchRepository matchRepository;
+    private static final String ARENA_DTO = "arenaDTO";
 
     @Transactional
     public List<ArenaDTOWithMatch> getAllArenas() {
@@ -35,41 +35,37 @@ public class ArenaService {
         return arenaDTOWithMatchList;
     }
 
+
+
+    boolean checkValidationCapacity(Integer minValue, Integer maxValue){
+        return (minValue != null || maxValue != null) && ((minValue == null || maxValue == null) || (minValue < maxValue));
+    }
     @Transactional
     public List<ArenaDTO> getArenaByCapacity(Integer minValue, Integer maxValue) {
         List<ArenaDTO> arenaDTOList = new ArrayList<>();
-        if ((minValue == null && maxValue == null) || ((minValue != null && maxValue != null) && (minValue > maxValue))) {
+        if (checkValidationCapacity(minValue, maxValue)) {
             return arenaDTOList;
         } else if (minValue == null) {
             for (Arena arena : arenaRepository.findArenaByMaxCapacity(maxValue)) {
                 ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arena);
                 arenaDTOList.add(arenaDTO);
-                if (!cacheManager.containsKey("arenaDTO_" + arenaDTO.getId())) {
-                    cacheManager.put("arenaDTO_" + arenaDTO.getId().toString(), arenaDTO);
-                }
             }
         } else if (maxValue == null) {
             for (Arena arena : arenaRepository.findArenaByMinCapacity(minValue)) {
                 ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arena);
                 arenaDTOList.add(arenaDTO);
-                if (!cacheManager.containsKey("arenaDTO_" + arenaDTO.getId())) {
-                    cacheManager.put("arenaDTO_" + arenaDTO.getId().toString(), arenaDTO);
-                }
             }
         } else {
             for (Arena arena : arenaRepository.findArenaByMinAndMaxCapacity(minValue, maxValue)) {
                 ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arena);
                 arenaDTOList.add(arenaDTO);
-                if (!cacheManager.containsKey("arenaDTO_" + arenaDTO.getId())) {
-                    cacheManager.put("arenaDTO_" + arenaDTO.getId().toString(), arenaDTO);
-                }
             }
         }
         return arenaDTOList;
     }
 
-    public ArenaDTO getArenaById(Integer arenaId) {
-        Object cachedData = cacheManager.get("arenaDTO_" + arenaId.toString());
+        public ArenaDTO getArenaById(Integer arenaId) {
+        Object cachedData = cacheManager.get(ARENA_DTO + arenaId.toString());
         if (cachedData != null) {
             return (ArenaDTO) cachedData;
         } else {
@@ -77,7 +73,7 @@ public class ArenaService {
             if (arenaDTO == null) {
                 return null;
             } else {
-                cacheManager.put("arenaDTO_" + arenaId.toString(), arenaDTO);
+                cacheManager.put(ARENA_DTO  + arenaId.toString(), arenaDTO);
             }
             return arenaDTO;
         }
@@ -86,7 +82,7 @@ public class ArenaService {
     public ArenaDTO createArena(Arena arena) {
         arenaRepository.save(arena);
         ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arena);
-        cacheManager.put("arenaDTO_" + arena.getId().toString(), arenaDTO);
+        cacheManager.put(ARENA_DTO  + arena.getId().toString(), arenaDTO);
         return arenaDTO;
     }
 @Transactional
@@ -99,7 +95,7 @@ public class ArenaService {
             matchRepository.save(match);
         }
         arenaRepository.deleteById(arenaId);
-        cacheManager.evict("arenaDTO_" + arenaId.toString());
+        cacheManager.evict(ARENA_DTO  + arenaId.toString());
         return "All good";
     }
 
@@ -113,7 +109,7 @@ public class ArenaService {
         }
         arenaRepository.save(arena);
         ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arena);
-        cacheManager.put("arenaDTO_" + arenaId.toString(), arenaDTO);
+        cacheManager.put(ARENA_DTO  + arenaId.toString(), arenaDTO);
         return arenaDTO;
     }
 }
