@@ -29,7 +29,7 @@ public class ArenaService {
     @Transactional
     public List<ArenaDTOWithMatch> getAllArenas() {
         List<ArenaDTOWithMatch> arenaDTOWithMatchList = new ArrayList<>();
-        for (Arena arena : arenaRepository.findAll()) {
+        for (Arena arena : arenaRepository.findAllWithMatchListAndTeamList()) {
             arenaDTOWithMatchList.add(ConvertDTOClasses.convertToArenaDTOWithTeam(arena));
         }
         return arenaDTOWithMatchList;
@@ -38,7 +38,7 @@ public class ArenaService {
 
 
     boolean checkValidationCapacity(Integer minValue, Integer maxValue){
-        return (minValue != null || maxValue != null) && ((minValue == null || maxValue == null) || (minValue < maxValue));
+        return (minValue == null && maxValue == null) || ((minValue != null && maxValue != null) && (minValue > maxValue));
     }
     @Transactional
     public List<ArenaDTO> getArenaByCapacity(Integer minValue, Integer maxValue) {
