@@ -22,7 +22,7 @@ import java.util.List;
 public class ArenaService {
 
     private final ArenaRepository arenaRepository;
-    private final CacheManager cacheManager;
+    private final CacheManager<String,Object> cacheManager;
     private final MatchRepository matchRepository;
     private static final String ARENA_DTO = "arenaDTO";
 
@@ -95,7 +95,7 @@ public class ArenaService {
             matchRepository.save(match);
         }
         arenaRepository.deleteById(arenaId);
-        cacheManager.evict(ARENA_DTO  + arenaId.toString());
+        cacheManager.remove(ARENA_DTO  + arenaId.toString());
         return "All good";
     }
 

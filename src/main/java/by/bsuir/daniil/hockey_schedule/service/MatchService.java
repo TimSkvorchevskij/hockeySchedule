@@ -28,7 +28,7 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final ArenaRepository arenaRepository;
     private final TeamRepository teamRepository;
-    private final CacheManager cacheManager;
+    private final CacheManager<String,Object> cacheManager;
 
     private static final String MATCH_DTO = "matchDTOWithTeamAndArena_";
 
@@ -65,7 +65,7 @@ public class MatchService {
     @Transactional
     public String deleteMatch(Integer delMatchId) {
         matchRepository.deleteById(delMatchId);
-        cacheManager.evict(MATCH_DTO + delMatchId.toString());
+        cacheManager.remove(MATCH_DTO + delMatchId.toString());
         return "Successfully";
     }
 

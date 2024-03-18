@@ -21,7 +21,7 @@ import java.util.List;
 public class TeamService {
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
-    private final CacheManager cacheManager;
+    private final CacheManager<String,Object> cacheManager;
 
     private static final String TEAM_DTO = "teamDTO_";
     private static final String MATCH_DTO = "matchDTOWithTeamAndArena_";
@@ -57,7 +57,7 @@ public class TeamService {
             matchRepository.save(match);
             cacheManager.put(MATCH_DTO + match.getId().toString(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
         }
-        cacheManager.evict(TEAM_DTO+ id.toString());
+        cacheManager.remove(TEAM_DTO+ id.toString());
         teamRepository.deleteById(id);
         return "All Good";
     }
@@ -97,7 +97,7 @@ public class TeamService {
             matchRepository.save(match);
             cacheManager.put(MATCH_DTO + match.getId().toString(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
         }
-        cacheManager.evict(TEAM_DTO + teamId.toString());
+        cacheManager.remove(TEAM_DTO + teamId.toString());
         return ConvertDTOClasses.convertToTeamDTO(teamRepository.findById(teamId).orElse(null));
     }
 }
