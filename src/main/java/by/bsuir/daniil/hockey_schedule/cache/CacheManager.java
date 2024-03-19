@@ -10,7 +10,7 @@ public class CacheManager<K, V> extends LinkedHashMap<K, V> {
 
     @Override
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-        int maxSize = 1000;
+        int maxSize = 1;
         return size() > maxSize;
     }
 }

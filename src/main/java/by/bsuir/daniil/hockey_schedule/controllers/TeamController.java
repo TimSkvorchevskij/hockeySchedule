@@ -5,6 +5,8 @@ import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTOWithMatch;
 import by.bsuir.daniil.hockey_schedule.model.Team;
 import by.bsuir.daniil.hockey_schedule.service.TeamService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,31 +19,38 @@ public class TeamController {
     private TeamService teamService;
 
     @GetMapping
-    public List<TeamDTOWithMatch> getAllTeams(){
-        return teamService.getAllTeams();
+    public ResponseEntity<List<TeamDTOWithMatch>> getAllTeams(){
+        List<TeamDTOWithMatch> teamDTOWithMatchList = teamService.getAllTeams();
+        if (teamDTOWithMatchList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        else {
+            return new ResponseEntity<>(teamDTOWithMatchList,HttpStatus.OK);
+        }
     }
 
     @GetMapping("/{id}")
-    public TeamDTO findById(@PathVariable Integer id){
-        return teamService.findTeamById(id);
+    public ResponseEntity<TeamDTO> findById(@PathVariable Integer id){
+        return new ResponseEntity<>(teamService.findTeamById(id),HttpStatus.OK);
     }
     @PostMapping("/create")
-    public TeamDTO addTeam(@RequestBody Team newTeam){
-        return teamService.addTeam(newTeam);
+    public ResponseEntity<TeamDTO> addTeam(@RequestBody Team newTeam){
+        return new ResponseEntity<>(teamService.addTeam(newTeam), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
-    public String deleteTeam(@RequestParam Integer teamId){
-        return teamService.deleteTeam(teamId);
+    public ResponseEntity<HttpStatus> deleteTeam(@RequestParam Integer teamId){
+        teamService.deleteTeam(teamId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/addMatch")
-    public TeamDTO addInMatchList(@RequestParam Integer teamId, @RequestParam Integer matchId){
-        return teamService.addMatchInMatchList(teamId, matchId);
+    public ResponseEntity<TeamDTO> addInMatchList(@RequestParam Integer teamId, @RequestParam Integer matchId){
+        return new ResponseEntity<>(teamService.addMatchInMatchList(teamId, matchId),HttpStatus.OK);
     }
 
     @PutMapping("/delMatch")
-    public TeamDTO delInMatchList(@RequestParam Integer teamId,@RequestParam Integer matchId){
-        return teamService.delMatchInMatchList(teamId, matchId);
+    public ResponseEntity<TeamDTO> delInMatchList(@RequestParam Integer teamId,@RequestParam Integer matchId){
+        return new ResponseEntity<>(teamService.delMatchInMatchList(teamId, matchId),HttpStatus.OK);
     }
 }

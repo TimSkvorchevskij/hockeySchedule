@@ -5,6 +5,8 @@ import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTOWithMatch;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.service.ArenaService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,36 +19,49 @@ public class ArenaController {
     private ArenaService arenaService;
 
     @GetMapping
-    public List<ArenaDTOWithMatch> getAllArenas(){
-        return arenaService.getAllArenas();
+    public ResponseEntity<List<ArenaDTOWithMatch>> getAllArenas() {
+        List<ArenaDTOWithMatch> arenaDTOWithMatchList = arenaService.getAllArenas();
+        if (arenaDTOWithMatchList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        else {
+            return new ResponseEntity<>(arenaDTOWithMatchList,HttpStatus.OK);
+        }
     }
 
     @GetMapping("/search/capacity")
-    public List<ArenaDTO> getArenaByCapacity(@RequestParam(value = "moreThan", required = false) Integer minValue,
-                                                      @RequestParam(value = "lessThan", required = false) Integer maxValue){
-        return arenaService.getArenaByCapacity(minValue, maxValue);
+    public ResponseEntity<List<ArenaDTO>> getArenaByCapacity(@RequestParam(value = "moreThan", required = false) Integer minValue,
+                                                            @RequestParam(value = "lessThan", required = false) Integer maxValue){
+        List<ArenaDTO> arenaDTOList = arenaService.getArenaByCapacity(minValue, maxValue);
+        if (arenaDTOList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        else {
+            return new ResponseEntity<>(arenaDTOList,HttpStatus.OK);
+        }
     }
 
 
     @GetMapping("/{id}")
-    public ArenaDTO getArenaById(@PathVariable Integer id){
-        return arenaService.getArenaById(id);
+    public ResponseEntity<ArenaDTO> getArenaById(@PathVariable Integer id){     ///////////////////////////
+        return new ResponseEntity<>(arenaService.getArenaById(id),HttpStatus.OK);
     }
 
     @PostMapping("/create")
-    public ArenaDTO createArena(@RequestBody Arena arena){
-        return arenaService.createArena(arena);
+    public ResponseEntity<ArenaDTO> createArena(@RequestBody Arena arena){
+        return new ResponseEntity<>(arenaService.createArena(arena), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete")
-    public String deleteArena(@RequestParam Integer id){
-        return arenaService.deleteArena(id);
+    public ResponseEntity<HttpStatus> deleteArena(@RequestParam Integer id){
+        arenaService.deleteArena(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/change")
-    public ArenaDTO update(@RequestParam Integer arenaId,
+    public ResponseEntity<ArenaDTO> update(@RequestParam Integer arenaId,
                         @RequestParam(required = false) String city,
                         @RequestParam(required = false) Integer capacity){
-        return arenaService.update(arenaId, city,capacity);
+        return new ResponseEntity<>(arenaService.update(arenaId, city,capacity),HttpStatus.OK);
     }
 }

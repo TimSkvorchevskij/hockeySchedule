@@ -5,6 +5,8 @@ import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
 
 import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithArena;
 import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithTeamAndArena;
+import by.bsuir.daniil.hockey_schedule.exception.BadRequestException;
+import by.bsuir.daniil.hockey_schedule.exception.ResourceNotFoundException;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.model.Team;
@@ -12,6 +14,7 @@ import by.bsuir.daniil.hockey_schedule.repository.ArenaRepository;
 import by.bsuir.daniil.hockey_schedule.repository.MatchRepository;
 import by.bsuir.daniil.hockey_schedule.repository.TeamRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +34,8 @@ public class MatchService {
     private final CacheManager<String,Object> cacheManager;
 
     private static final String MATCH_DTO = "matchDTOWithTeamAndArena_";
+    private static final String DOESNT_EXIST = "Match doesn't exist ID = ";
+
 
     @Transactional
     public List<MatchDTOWithTeamAndArena> getAllMatches() {
@@ -43,13 +48,11 @@ public class MatchService {
         return matchDTOWithTeamAndArenaList;
     }
 
-//    @Transactional
     public MatchDTOWithTeamAndArena addMatch(Match newMatch) {
-
         if (newMatch.getTeamList() != null) {
             List<Team> teamList = newMatch.getTeamList();
             if (teamList.size() > 2) {
-                throw new IllegalStateException("max 2 team");
+                throw new BadRequestException("A match can contain only two teams");
             }
             teamRepository.saveAll(teamList);
         }
@@ -63,15 +66,15 @@ public class MatchService {
     }
 
     @Transactional
-    public String deleteMatch(Integer delMatchId) {
+    public void deleteMatch(Integer delMatchId) {
+        Match match = matchRepository.findById(delMatchId).orElseThrow(() -> new ResourceNotFoundException(DOESNT_EXIST + delMatchId));
         matchRepository.deleteById(delMatchId);
         cacheManager.remove(MATCH_DTO + delMatchId.toString());
-        return "Successfully";
     }
 
     public MatchDTOWithArena setNewArena(Integer matchId, Integer newArenaId) {
-        Match match = matchRepository.findById(matchId).orElseThrow(() -> new IllegalStateException("match with id: " + matchId + " doesn't exist"));
-        Arena arena = arenaRepository.findById(newArenaId).orElseThrow(() -> new IllegalStateException("arena with id: " + newArenaId + " doesnt exist"));
+        Match match = matchRepository.findById(matchId).orElseThrow(() -> new ResourceNotFoundException(DOESNT_EXIST + matchId));
+        Arena arena = arenaRepository.findById(newArenaId).orElseThrow(() -> new ResourceNotFoundException("Arena with id: " + newArenaId + " doesnt exist"));
         match.setArena(arena);
         matchRepository.save(match);
         cacheManager.put(MATCH_DTO + matchId.toString(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
@@ -84,12 +87,9 @@ public class MatchService {
         if (cachedData != null) {
             return (MatchDTOWithTeamAndArena) cachedData;
         } else {
-            MatchDTOWithTeamAndArena matchDTOWithTeamAndArena = ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.findById(id).orElse(null));
-            if (matchDTOWithTeamAndArena == null) {
-                return null;
-            } else {
-                cacheManager.put(MATCH_DTO + id.toString(), matchDTOWithTeamAndArena);
-            }
+            MatchDTOWithTeamAndArena matchDTOWithTeamAndArena = ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException(DOESNT_EXIST + id)));
+            cacheManager.put(MATCH_DTO + id.toString(), matchDTOWithTeamAndArena);
             return matchDTOWithTeamAndArena;
         }
     }

@@ -5,11 +5,14 @@ import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
 import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTO;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTOWithMatch;
+import by.bsuir.daniil.hockey_schedule.exception.ResourceNotFoundException;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.repository.ArenaRepository;
 import by.bsuir.daniil.hockey_schedule.repository.MatchRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +25,7 @@ import java.util.List;
 public class ArenaService {
 
     private final ArenaRepository arenaRepository;
-    private final CacheManager<String,Object> cacheManager;
+    private final CacheManager<String, Object> cacheManager;
     private final MatchRepository matchRepository;
     private static final String ARENA_DTO = "arenaDTO";
 
@@ -36,10 +39,10 @@ public class ArenaService {
     }
 
 
-
-    boolean checkValidationCapacity(Integer minValue, Integer maxValue){
+    boolean checkValidationCapacity(Integer minValue, Integer maxValue) {
         return (minValue == null && maxValue == null) || ((minValue != null && maxValue != null) && (minValue > maxValue));
     }
+
     @Transactional
     public List<ArenaDTO> getArenaByCapacity(Integer minValue, Integer maxValue) {
         List<ArenaDTO> arenaDTOList = new ArrayList<>();
@@ -64,17 +67,14 @@ public class ArenaService {
         return arenaDTOList;
     }
 
-        public ArenaDTO getArenaById(Integer arenaId) {
+    public ArenaDTO getArenaById(Integer arenaId) {
         Object cachedData = cacheManager.get(ARENA_DTO + arenaId.toString());
         if (cachedData != null) {
             return (ArenaDTO) cachedData;
         } else {
-            ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arenaRepository.findById(arenaId).orElse(null));
-            if (arenaDTO == null) {
-                return null;
-            } else {
-                cacheManager.put(ARENA_DTO  + arenaId.toString(), arenaDTO);
-            }
+            ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arenaRepository.findById(arenaId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found arena with id = " + arenaId.toString())));
+            cacheManager.put(ARENA_DTO + arenaId.toString(), arenaDTO);
             return arenaDTO;
         }
     }
@@ -82,12 +82,12 @@ public class ArenaService {
     public ArenaDTO createArena(Arena arena) {
         arenaRepository.save(arena);
         ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arena);
-        cacheManager.put(ARENA_DTO  + arena.getId().toString(), arenaDTO);
+        cacheManager.put(ARENA_DTO + arena.getId().toString(), arenaDTO);
         return arenaDTO;
     }
-@Transactional
-    public String deleteArena(Integer arenaId) {
-        Arena arena = arenaRepository.findById(arenaId).orElseThrow(() -> new IllegalStateException("Arena with Id: " + arenaId + " doesnt exist!"));
+
+    public void deleteArena(Integer arenaId) {
+        Arena arena = arenaRepository.findById(arenaId).orElseThrow(() -> new ResourceNotFoundException("Arena with Id: " + arenaId + " doesnt exist!"));
         List<Match> matchList = arena.getMatchList();
         for (Match match : matchList) {
             match.setArena(null);
@@ -95,12 +95,11 @@ public class ArenaService {
             matchRepository.save(match);
         }
         arenaRepository.deleteById(arenaId);
-        cacheManager.remove(ARENA_DTO  + arenaId.toString());
-        return "All good";
+        cacheManager.remove(ARENA_DTO + arenaId.toString());
     }
 
     public ArenaDTO update(Integer arenaId, String city, Integer capacity) {
-        Arena arena = arenaRepository.findById(arenaId).orElseThrow(() -> new IllegalStateException("Arena with id: " + arenaId + " doesn't exist!"));
+        Arena arena = arenaRepository.findById(arenaId).orElseThrow(() -> new ResourceNotFoundException("Arena with id: " + arenaId + " doesn't exist!"));
         if (city != null && !city.isEmpty()) {
             arena.setCity(city);
         }
@@ -109,7 +108,7 @@ public class ArenaService {
         }
         arenaRepository.save(arena);
         ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arena);
-        cacheManager.put(ARENA_DTO  + arenaId.toString(), arenaDTO);
+        cacheManager.put(ARENA_DTO + arenaId.toString(), arenaDTO);
         return arenaDTO;
     }
 }

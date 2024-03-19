@@ -1,7 +1,9 @@
 package by.bsuir.daniil.hockey_schedule.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+//import jakarta.persistence;
 import jakarta.persistence.*;
+//import jakarta.persistence.Table;
 import lombok.Data;
 import java.util.List;
 
@@ -11,11 +13,11 @@ import java.util.List;
 public class Arena {
     @Id
     @GeneratedValue
-    Integer id;
-    String city;
-    Integer capacity;
+    private Integer id;
+    private String city;
+    private Integer capacity;
     @JsonIgnoreProperties("arena")
     @OneToMany(mappedBy = "arena", fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH} )
-    List<Match> matchList;
+            cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
+    private List<Match> matchList;
 }
