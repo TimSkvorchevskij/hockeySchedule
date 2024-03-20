@@ -16,12 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ConvertDTOClasses {
-
-    private ConvertDTOClasses(){
+public final class ConvertDTOClasses {
+    private ConvertDTOClasses() {
     }
 
-    public static ArenaDTOWithMatch convertToArenaDTOWithTeam(Arena arena) {
+    public static ArenaDTOWithMatch convertToArenaDTOWithTeam(final Arena arena) {
         if (arena == null) {
             return null;
         }
@@ -40,7 +39,7 @@ public class ConvertDTOClasses {
         return arenaDTO;
     }
 
-    public static ArenaDTO convertToArenaDTO(Arena arena) {
+    public static ArenaDTO convertToArenaDTO(final Arena arena) {
         if (arena == null) {
             return null;
         }
@@ -51,7 +50,7 @@ public class ConvertDTOClasses {
         return arenaDTO;
     }
 
-    public static MatchDTOWithTeam convertToMatchDTOWithTeam(Match match) {
+    public static MatchDTOWithTeam convertToMatchDTOWithTeam(final Match match) {
         if (match == null) {
             return null;
         }
@@ -68,7 +67,7 @@ public class ConvertDTOClasses {
         return matchDTOWithTeam;
     }
 
-    public static MatchDTOWithTeamAndArena convertToMatchDTOWithTeamAndArena(Match match) {
+    public static MatchDTOWithTeamAndArena convertToMatchDTOWithTeamAndArena(final Match match) {
         if (match == null) {
             return null;
         }
@@ -86,7 +85,7 @@ public class ConvertDTOClasses {
         return matchDTOWithTeamAndArena;
     }
 
-    public static TeamDTO convertToTeamDTO(Team team) {
+    public static TeamDTO convertToTeamDTO(final Team team) {
         if (team == null) {
             return null;
         }
@@ -96,7 +95,7 @@ public class ConvertDTOClasses {
         return teamDTO;
     }
 
-    public static TeamDTOWithMatch convertToTeamDTOWithMatch(Team team) {
+    public static TeamDTOWithMatch convertToTeamDTOWithMatch(final Team team) {
         if (team == null) {
             return null;
         }
@@ -113,7 +112,7 @@ public class ConvertDTOClasses {
         return teamDTO;
     }
 
-    public static MatchDTOWithArena convertToMatchDTOWithArena(Match match) {
+    public static MatchDTOWithArena convertToMatchDTOWithArena(final Match match) {
         MatchDTOWithArena matchDTOWithArena = new MatchDTOWithArena();
         matchDTOWithArena.setId(match.getId());
         matchDTOWithArena.setDateTime(match.getDateTime());

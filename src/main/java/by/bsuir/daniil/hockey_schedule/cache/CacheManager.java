@@ -9,7 +9,7 @@ import java.util.Map;
 public class CacheManager<K, V> extends LinkedHashMap<K, V> {
 
     @Override
-    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+    protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
         int maxSize = 1;
         return size() > maxSize;
     }
