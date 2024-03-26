@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "TeamController",
@@ -71,5 +72,10 @@ public class TeamController {
     public ResponseEntity<TeamDTO> delInMatchList(@RequestParam @Parameter(description = "ID команды из которой нужно удалить") final Integer teamId,
                                                   @RequestParam @Parameter(description = "ID матча который нужно удалить") final Integer matchId) {
         return new ResponseEntity<>(teamService.delMatchInMatchList(teamId, matchId), HttpStatus.OK);
+    }
+
+    @PostMapping("/addListTeams")
+    public ResponseEntity<List<TeamDTO>> addMultipleCommand(@RequestBody ArrayList<Team> teamList){
+        return new ResponseEntity<>(teamService.addMultipleCommands(teamList), HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package by.bsuir.daniil.hockey_schedule.service;
 
 import by.bsuir.daniil.hockey_schedule.aspect.AspectAnnotation;
 import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
+import by.bsuir.daniil.hockey_schedule.counter.RequestCounterService;
 import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
 import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTO;
 import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTOWithMatch;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -25,10 +27,13 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
     private final CacheManager<String, Object> cacheManager;
+    private RequestCounterService counterService;
     private static final String TEAM_DOESNT_EXIST = "Team doesn't exist. ID = ";
     private static final String MATCH_DOESNT_EXIST = "Match doesn't exist. ID = ";
     private static final String TEAM_DTO = "teamDTO_";
     private static final String MATCH_DTO = "matchDTOWithTeamAndArena_";
+
+
 
     @AspectAnnotation
     public TeamDTO addTeam(final Team newTeam) {
@@ -39,6 +44,7 @@ public class TeamService {
 
     @AspectAnnotation
     public TeamDTO findTeamById(final Integer teamId) {
+        counterService.incrementCounter();
         Object cachedData = cacheManager.get(TEAM_DTO + teamId.toString());
         if (cachedData != null) {
             return (TeamDTO) cachedData;
@@ -81,7 +87,7 @@ public class TeamService {
         } else {
             match.getTeamList().add(team);
             matchRepository.save(match);
-            cacheManager.put(MATCH_DTO + match.getId().toString(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
+            cacheManager.put(MATCH_DTO + match.getId(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
         }
         return ConvertDTOClasses.convertToTeamDTO(teamRepository.findById(teamId).orElse(null));
     }
@@ -91,7 +97,7 @@ public class TeamService {
         List<TeamDTOWithMatch> teamDTOList = new ArrayList<>();
         for (Team team : teamRepository.findAll()) {
             teamDTOList.add(ConvertDTOClasses.convertToTeamDTOWithMatch(team));
-            cacheManager.put(TEAM_DTO + team.getId().toString(), ConvertDTOClasses.convertToTeamDTO(team));
+            cacheManager.put(TEAM_DTO + team.getId(), ConvertDTOClasses.convertToTeamDTO(team));
         }
         return teamDTOList;
     }
@@ -107,5 +113,9 @@ public class TeamService {
         }
         cacheManager.remove(TEAM_DTO + teamId.toString());
         return ConvertDTOClasses.convertToTeamDTO(teamRepository.findById(teamId).orElse(null));
+    }
+    @AspectAnnotation
+    public List<TeamDTO> addMultipleCommands(final ArrayList<Team> teamList){
+        return teamList.stream().map(this::addTeam).collect(Collectors.toList());
     }
 }

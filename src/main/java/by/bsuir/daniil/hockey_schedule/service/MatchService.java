@@ -15,6 +15,8 @@ import by.bsuir.daniil.hockey_schedule.repository.ArenaRepository;
 import by.bsuir.daniil.hockey_schedule.repository.MatchRepository;
 import by.bsuir.daniil.hockey_schedule.repository.TeamRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,21 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Service
+//@Service
 @AllArgsConstructor
+@Component
 @Transactional
 public class MatchService {
-
     private final MatchRepository matchRepository;
     private final ArenaRepository arenaRepository;
     private final TeamRepository teamRepository;
     private final CacheManager<String, Object> cacheManager;
-
     private static final String MATCH_DTO = "matchDTOWithTeamAndArena_";
     private static final String DOESNT_EXIST = "Match doesn't exist ID = ";
 
-
-    @Transactional
     public List<MatchDTOWithTeamAndArena> getAllMatches() {
         List<MatchDTOWithTeamAndArena> matchDTOWithTeamAndArenaList = new ArrayList<>();
         for (Match match : matchRepository.findAll()) {
@@ -61,12 +60,11 @@ public class MatchService {
         }
         matchRepository.save(newMatch);
         MatchDTOWithTeamAndArena matchDTOWithTeamAndArena = ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.save(newMatch));
-        cacheManager.put(MATCH_DTO + newMatch.getId().toString(), matchDTOWithTeamAndArena);
+        cacheManager.put(MATCH_DTO + newMatch.getId(), matchDTOWithTeamAndArena);
         return matchDTOWithTeamAndArena;
     }
 
     @AspectAnnotation
-    @Transactional
     public void deleteMatch(final Integer delMatchId) {
         Match match = matchRepository.findById(delMatchId).orElseThrow(() -> new ResourceNotFoundException(DOESNT_EXIST + delMatchId));
         matchRepository.deleteById(delMatchId);
@@ -84,7 +82,6 @@ public class MatchService {
     }
 
     @AspectAnnotation
-    @Transactional
     public MatchDTOWithTeamAndArena findById(final Integer id) {
         Object cachedData = cacheManager.get(MATCH_DTO + id.toString());
         if (cachedData != null) {

@@ -16,13 +16,13 @@ import java.util.List;
 
 @Tag(name = "MatchController",
         description = "You can add edit and view information about matches")
-@AllArgsConstructor
+//@AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/match")
+@AllArgsConstructor
 public class MatchController {
 
     private MatchService matchService;
-
     @Operation(summary = "Просмотр всех матчей",
             description = "Позволяет просмотреть все матчи")
     @GetMapping
