@@ -17,7 +17,8 @@ public interface ArenaRepository extends JpaRepository<Arena, Integer> {
     @Query("SELECT a FROM Arena a WHERE a.capacity >= :minValue ORDER BY a.capacity ASC")
     List<Arena> findArenaByMinCapacity(@Param("minValue") Integer minValue);
 
-    @Query(value = "SELECT * FROM arenas WHERE capacity BETWEEN :minValue AND :maxValue ORDER BY capacity ASC", nativeQuery = true)
+    @Query(value = "SELECT * FROM arenas WHERE capacity BETWEEN :minValue AND :maxValue ORDER BY capacity ASC",
+            nativeQuery = true)
     List<Arena> findArenaByMinAndMaxCapacity(@Param("minValue") Integer minValue, @Param("maxValue") Integer maxValue);
 
     @Query("SELECT DISTINCT a FROM Arena a LEFT JOIN FETCH a.matchList m LEFT JOIN m.teamList")

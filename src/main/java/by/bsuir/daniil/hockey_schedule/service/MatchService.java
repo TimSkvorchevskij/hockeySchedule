@@ -15,16 +15,13 @@ import by.bsuir.daniil.hockey_schedule.repository.ArenaRepository;
 import by.bsuir.daniil.hockey_schedule.repository.MatchRepository;
 import by.bsuir.daniil.hockey_schedule.repository.TeamRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-//@Service
 @AllArgsConstructor
 @Component
 @Transactional
@@ -53,31 +50,48 @@ public class MatchService {
             if (teamList.size() > 2) {
                 throw new BadRequestException("A match can contain only two teams");
             }
-            teamRepository.saveAll(teamList);
+            List<Team> newTeamList = new ArrayList<>();
+            for (Team team : teamList) {
+                if (team.getId() == null) {
+                    newTeamList.add(teamRepository.save(team));
+                } else {
+                    teamRepository.findById(team.getId()).ifPresent(newTeamList::add);
+                }
+            }
+            newMatch.setTeamList(newTeamList);
         }
         if (newMatch.getArena() != null) {
-            arenaRepository.save(newMatch.getArena());
+            Arena arena = newMatch.getArena();
+            if (arena.getId() == null) {
+                arenaRepository.save(arena);
+            } else {
+                newMatch.setArena(null);
+                arenaRepository.findById(arena.getId()).ifPresent(newMatch::setArena);
+            }
         }
-        matchRepository.save(newMatch);
-        MatchDTOWithTeamAndArena matchDTOWithTeamAndArena = ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.save(newMatch));
+        MatchDTOWithTeamAndArena matchDTOWithTeamAndArena =
+                ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.save(newMatch));
         cacheManager.put(MATCH_DTO + newMatch.getId(), matchDTOWithTeamAndArena);
         return matchDTOWithTeamAndArena;
     }
 
     @AspectAnnotation
     public void deleteMatch(final Integer delMatchId) {
-        Match match = matchRepository.findById(delMatchId).orElseThrow(() -> new ResourceNotFoundException(DOESNT_EXIST + delMatchId));
+        Match match = matchRepository.findById(delMatchId).orElseThrow(()
+                -> new ResourceNotFoundException(DOESNT_EXIST + delMatchId));
         matchRepository.deleteById(delMatchId);
-        cacheManager.remove(MATCH_DTO + delMatchId.toString());
+        cacheManager.remove(MATCH_DTO + delMatchId);
     }
 
     @AspectAnnotation
     public MatchDTOWithArena setNewArena(final Integer matchId, final Integer newArenaId) {
-        Match match = matchRepository.findById(matchId).orElseThrow(() -> new ResourceNotFoundException(DOESNT_EXIST + matchId));
-        Arena arena = arenaRepository.findById(newArenaId).orElseThrow(() -> new ResourceNotFoundException("Arena with id: " + newArenaId + " doesnt exist"));
+        Match match = matchRepository.findById(matchId).orElseThrow(()
+                -> new ResourceNotFoundException(DOESNT_EXIST + matchId));
+        Arena arena = arenaRepository.findById(newArenaId).orElseThrow(()
+                -> new ResourceNotFoundException("Arena with id: " + newArenaId + " doesnt exist"));
         match.setArena(arena);
         matchRepository.save(match);
-        cacheManager.put(MATCH_DTO + matchId.toString(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
+        cacheManager.put(MATCH_DTO + matchId, ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
         return ConvertDTOClasses.convertToMatchDTOWithArena(match);
     }
 
@@ -87,9 +101,10 @@ public class MatchService {
         if (cachedData != null) {
             return (MatchDTOWithTeamAndArena) cachedData;
         } else {
-            MatchDTOWithTeamAndArena matchDTOWithTeamAndArena = ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException(DOESNT_EXIST + id)));
-            cacheManager.put(MATCH_DTO + id.toString(), matchDTOWithTeamAndArena);
+            MatchDTOWithTeamAndArena matchDTOWithTeamAndArena =
+                    ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException(DOESNT_EXIST + id)));
+            cacheManager.put(MATCH_DTO + id, matchDTOWithTeamAndArena);
             return matchDTOWithTeamAndArena;
         }
     }

@@ -1,5 +1,6 @@
 package by.bsuir.daniil.hockey_schedule.controllers;
 
+import by.bsuir.daniil.hockey_schedule.aspect.AspectAnnotation;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTO;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTOWithMatch;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
@@ -19,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/v1/arena")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ArenaController {
 
     private ArenaService arenaService;
@@ -38,10 +40,11 @@ public class ArenaController {
     @Operation(summary = "Получение арены по вместительности",
             description = "Позволяет просмотреть список арен с указанной вместительностью")
     @GetMapping("/search/capacity")
-    public ResponseEntity<List<ArenaDTO>> getArenaByCapacity(@RequestParam(value = "moreThan", required = false)
-                                                                 @Parameter(description = "Минимальное значение вместительности") final Integer minValue,
-                                                            @RequestParam(value = "lessThan", required = false)
-                                                            @Parameter(description = "Максимальное значение вместительности") final Integer maxValue) {
+    public ResponseEntity<List<ArenaDTO>> getArenaByCapacity(
+            @RequestParam(value = "moreThan", required = false)
+            @Parameter(description = "Минимальное значение вместительности") final Integer minValue,
+            @RequestParam(value = "lessThan", required = false)
+            @Parameter(description = "Максимальное значение вместительности") final Integer maxValue) {
         List<ArenaDTO> arenaDTOList = arenaService.getArenaByCapacity(minValue, maxValue);
         if (arenaDTOList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -53,21 +56,25 @@ public class ArenaController {
     @Operation(summary = "Просмотр по ID",
             description = "Позволяет просмотреть арену по ID")
     @GetMapping("/{id}")
-    public ResponseEntity<ArenaDTO> getArenaById(@PathVariable @Parameter(description = "ID арены которую нужно найти") final Integer id) {
+    public ResponseEntity<ArenaDTO> getArenaById(
+            @PathVariable @Parameter(description = "ID арены которую нужно найти") final Integer id) {
         return new ResponseEntity<>(arenaService.getArenaById(id), HttpStatus.OK);
     }
 
     @Operation(summary = "Регистрация арены",
             description = "Позволяет создать новвую арену")
     @PostMapping("/create")
-    public ResponseEntity<ArenaDTO> createArena(@RequestBody @Parameter(description = "Json объект новой арены") final Arena arena) {
+    @AspectAnnotation
+    public ResponseEntity<ArenaDTO> createArena(
+            @RequestBody @Parameter(description = "Json объект новой арены") final Arena arena) {
         return new ResponseEntity<>(arenaService.createArena(arena), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Удаление арены",
             description = "Позволяет удлаить арену по ID")
     @DeleteMapping("/delete")
-    public ResponseEntity<HttpStatus> deleteArena(@RequestParam @Parameter(description = "ID арены которую нужно удалить") final Integer id) {
+    public ResponseEntity<HttpStatus> deleteArena(
+            @RequestParam @Parameter(description = "ID арены которую нужно удалить") final Integer id) {
         arenaService.deleteArena(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -75,9 +82,10 @@ public class ArenaController {
     @Operation(summary = "Изменение данных арены",
             description = "Позволяет изменить арены")
     @PutMapping("/change")
-    public ResponseEntity<ArenaDTO> update(@RequestParam @Parameter(description = "ID арены в которой нужно изменить параметры") final Integer arenaId,
-                        @RequestParam(required = false) @Parameter(description = "Новый город") final String city,
-                        @RequestParam(required = false) @Parameter(description = "Новая вместительность") final Integer capacity) {
+    public ResponseEntity<ArenaDTO> update(
+            @RequestParam @Parameter(description = "ID арены в которой нужно изменить параметры") final Integer arenaId,
+            @RequestParam(required = false) @Parameter(description = "Новый город") final String city,
+            @RequestParam(required = false) @Parameter(description = "Новая вместительность") final Integer capacity) {
         return new ResponseEntity<>(arenaService.update(arenaId, city, capacity), HttpStatus.OK);
     }
 }

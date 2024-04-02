@@ -8,7 +8,6 @@ public class RequestCounterService {
 
     public synchronized void incrementCounter() {
         counter.increment();
-        System.out.println(counter.getCount());
     }
 
     public synchronized int getCounter() {

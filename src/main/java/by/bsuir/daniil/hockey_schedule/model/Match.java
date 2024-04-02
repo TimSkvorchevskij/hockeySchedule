@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.ZonedDateTime;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,10 +17,10 @@ public class Match {
     @GeneratedValue
     private Integer id;
 
-    private ZonedDateTime dateTime;
+    private LocalDateTime dateTime;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH},
-    fetch = FetchType.LAZY)
+            fetch = FetchType.LAZY)
     @JsonIgnoreProperties("matchList")
     @JoinTable(name = "match_team",
             joinColumns = @JoinColumn(name = "matchId"),

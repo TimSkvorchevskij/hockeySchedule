@@ -20,9 +20,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/match")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class MatchController {
 
     private MatchService matchService;
+
     @Operation(summary = "Просмотр всех матчей",
             description = "Позволяет просмотреть все матчи")
     @GetMapping
@@ -38,21 +40,24 @@ public class MatchController {
     @Operation(summary = "Поиск по ID",
             description = "Позволяет просмотреть информацию о матче по ID")
     @GetMapping("/{id}")
-    public ResponseEntity<MatchDTOWithTeamAndArena> findById(@PathVariable @Parameter(description = "ID матча который нужно найти") final String id) {
+    public ResponseEntity<MatchDTOWithTeamAndArena> findById(
+            @PathVariable @Parameter(description = "ID матча который нужно найти") final String id) {
         return new ResponseEntity<>(matchService.findById(Integer.parseInt(id)), HttpStatus.OK);
     }
 
     @Operation(summary = "Регистарция матча",
             description = "Позволяет зарегистрировать новый матч")
     @PostMapping("/create")
-    public ResponseEntity<MatchDTOWithTeamAndArena> addMatch(@RequestBody @Parameter(description = "Json объект нового матча") final Match match) {
+    public ResponseEntity<MatchDTOWithTeamAndArena> addMatch(
+            @RequestBody @Parameter(description = "Json объект нового матча") final Match match) {
         return new ResponseEntity<>(matchService.addMatch(match), HttpStatus.OK);
     }
 
     @Operation(summary = "Удаление матча",
             description = "Позволяет удлаить")
     @DeleteMapping("/delete")
-    public ResponseEntity<HttpStatus> deleteMatch(@RequestParam @Parameter(description = "ID матча который нужно удалить") final Integer matchId) {
+    public ResponseEntity<HttpStatus> deleteMatch(
+            @RequestParam @Parameter(description = "ID матча который нужно удалить") final Integer matchId) {
         matchService.deleteMatch(matchId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -60,8 +65,9 @@ public class MatchController {
     @Operation(summary = "Установлка арены",
             description = "Позволяет установить новую арену для матча")
     @PutMapping("/setArena")
-    public ResponseEntity<MatchDTOWithArena> setNewArenaId(@RequestParam @Parameter(description = "ID матча которому нужно установить новую арену") final Integer matchId,
-                                                           @RequestParam @Parameter(description = "ID арены") final Integer newArenaId) {
+    public ResponseEntity<MatchDTOWithArena> setNewArenaId(
+            @RequestParam @Parameter(description = "ID матча которому нужно установить новую арену") final Integer matchId,
+            @RequestParam @Parameter(description = "ID арены") final Integer newArenaId) {
         return new ResponseEntity<>(matchService.setNewArena(matchId, newArenaId), HttpStatus.OK);
     }
 }

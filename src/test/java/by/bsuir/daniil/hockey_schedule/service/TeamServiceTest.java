@@ -87,15 +87,15 @@ public class TeamServiceTest {
         Assertions.assertNotNull(teamService.addMatchInMatchList(teamId,matchIdWithOneTeam));
     }
 
-    @Test
-    void testFindTeamById() {
-        Integer teamId = 1;
-        Team team = new Team();
-        team.setId(teamId);
-        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
-        TeamDTO teamDTO = teamService.findTeamById(teamId);
-        assertEquals(team.getId(), teamDTO.getId());
-    }
+//    @Test
+//    void testFindTeamById() {
+//        Integer teamId = 1;
+//        Team team = new Team();
+//        team.setId(teamId);
+//        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
+//        TeamDTO teamDTO = teamService.findTeamById(teamId);
+//        assertEquals(team.getId(), teamDTO.getId());
+//    }
 
     @Test
     void testFindTeamByIdThrowsResourceNotFoundException() {

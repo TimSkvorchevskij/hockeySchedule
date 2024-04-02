@@ -3,19 +3,16 @@ package by.bsuir.daniil.hockey_schedule.service;
 import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTO;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTOWithMatch;
-import by.bsuir.daniil.hockey_schedule.exception.BadRequestException;
 import by.bsuir.daniil.hockey_schedule.exception.ResourceNotFoundException;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.model.Match;
 import by.bsuir.daniil.hockey_schedule.repository.ArenaRepository;
 import by.bsuir.daniil.hockey_schedule.repository.MatchRepository;
-import by.bsuir.daniil.hockey_schedule.service.ArenaService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -88,9 +85,10 @@ public class ArenaServiceTest {
         assertEquals(2, result.size());
 
         List<ArenaDTO> resultBadRequest = arenaService.getArenaByCapacity(maxValue, minValue);
-        assertEquals(0,resultBadRequest.size());
+        assertEquals(0, resultBadRequest.size());
 
     }
+
     @Test
     public void testDeleteArena() {
         Arena arena = new Arena();
@@ -136,7 +134,7 @@ public class ArenaServiceTest {
 
         when(arenaRepository.findById(2)).thenReturn(Optional.empty());
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            arenaService.update(2,"newCity",200);
+            arenaService.update(2, "newCity", 200);
         });
     }
 }

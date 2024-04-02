@@ -1,12 +1,10 @@
 package by.bsuir.daniil.hockey_schedule.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-//import jakarta.persistence;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-//import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+
 import java.util.List;
 
 @Data

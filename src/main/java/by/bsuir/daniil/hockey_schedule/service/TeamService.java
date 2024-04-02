@@ -34,7 +34,6 @@ public class TeamService {
     private static final String MATCH_DTO = "matchDTOWithTeamAndArena_";
 
 
-
     @AspectAnnotation
     public TeamDTO addTeam(final Team newTeam) {
         teamRepository.save(newTeam);
@@ -43,43 +42,42 @@ public class TeamService {
     }
 
     @AspectAnnotation
-    public TeamDTO findTeamById(final Integer teamId) {
+    public TeamDTOWithMatch findTeamById(final Integer teamId) {
         counterService.incrementCounter();
-        Object cachedData = cacheManager.get(TEAM_DTO + teamId.toString());
-        if (cachedData != null) {
-            return (TeamDTO) cachedData;
-        } else {
-            TeamDTO teamDTO = ConvertDTOClasses.convertToTeamDTO(teamRepository.findById(teamId)
-                    .orElseThrow(() -> new ResourceNotFoundException(TEAM_DOESNT_EXIST + teamId)));
-            cacheManager.put(TEAM_DTO + teamId.toString(), teamDTO);
-            return teamDTO;
-        }
+        return ConvertDTOClasses.convertToTeamDTOWithMatch(teamRepository.findById(teamId)
+                .orElseThrow(() -> new ResourceNotFoundException(TEAM_DOESNT_EXIST + teamId)));
+
     }
 
     @AspectAnnotation
     @Transactional
     public void deleteTeam(final Integer id) {
-        Team team = teamRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(TEAM_DOESNT_EXIST + id));
+        Team team = teamRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException(TEAM_DOESNT_EXIST + id));
         List<Match> matchList = team.getMatchList();
         for (Match match : matchList) {
             match.getTeamList().remove(team);
             matchRepository.save(match);
-            cacheManager.put(MATCH_DTO + match.getId().toString(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
+            cacheManager.put(MATCH_DTO + match.getId().toString(),
+                    ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
         }
-        cacheManager.remove(TEAM_DTO + id.toString());
+        cacheManager.remove(TEAM_DTO + id);
         teamRepository.deleteById(id);
     }
 
     @AspectAnnotation
     public TeamDTO addMatchInMatchList(final Integer teamId, final Integer matchId) {
-        Team team = teamRepository.findById(teamId).orElseThrow(() -> new ResourceNotFoundException(TEAM_DOESNT_EXIST + teamId));
-        Match match = matchRepository.findById(matchId).orElseThrow(() -> new ResourceNotFoundException(MATCH_DOESNT_EXIST + matchId));
+        Team team = teamRepository.findById(teamId).orElseThrow(()
+                -> new ResourceNotFoundException(TEAM_DOESNT_EXIST + teamId));
+        Match match = matchRepository.findById(matchId).orElseThrow(()
+                -> new ResourceNotFoundException(MATCH_DOESNT_EXIST + matchId));
         if (match.getTeamList().isEmpty()) {
             List<Team> teamList = new ArrayList<>();
             teamList.add(team);
             match.setTeamList(teamList);
             matchRepository.save(match);
-            cacheManager.put(MATCH_DTO + match.getId().toString(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
+            cacheManager.put(MATCH_DTO + match.getId(),
+                    ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
         } else if (match.getTeamList().contains(team)) {
             throw new BadRequestException("This match is already set");
         } else if (match.getTeamList().size() >= 2) {
@@ -87,7 +85,8 @@ public class TeamService {
         } else {
             match.getTeamList().add(team);
             matchRepository.save(match);
-            cacheManager.put(MATCH_DTO + match.getId(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
+            cacheManager.put(MATCH_DTO + match.getId(),
+                    ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
         }
         return ConvertDTOClasses.convertToTeamDTO(teamRepository.findById(teamId).orElse(null));
     }
@@ -105,17 +104,21 @@ public class TeamService {
 
     @AspectAnnotation
     public TeamDTO delMatchInMatchList(final Integer teamId, final Integer matchId) {
-        Match match = matchRepository.findById(matchId).orElseThrow(() -> new ResourceNotFoundException(MATCH_DOESNT_EXIST + matchId));
-        Team team = teamRepository.findById(teamId).orElseThrow(() -> new ResourceNotFoundException(TEAM_DOESNT_EXIST + teamId));
+        Match match = matchRepository.findById(matchId).orElseThrow(()
+                -> new ResourceNotFoundException(MATCH_DOESNT_EXIST + matchId));
+        Team team = teamRepository.findById(teamId).orElseThrow(()
+                -> new ResourceNotFoundException(TEAM_DOESNT_EXIST + teamId));
         if (match.getTeamList().remove(team)) {
             matchRepository.save(match);
-            cacheManager.put(MATCH_DTO + match.getId().toString(), ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
+            cacheManager.put(MATCH_DTO + match.getId().toString(),
+                    ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));
         }
-        cacheManager.remove(TEAM_DTO + teamId.toString());
+        cacheManager.remove(TEAM_DTO + teamId);
         return ConvertDTOClasses.convertToTeamDTO(teamRepository.findById(teamId).orElse(null));
     }
+
     @AspectAnnotation
-    public List<TeamDTO> addMultipleCommands(final ArrayList<Team> teamList){
+    public List<TeamDTO> addMultipleCommands(final ArrayList<Team> teamList) {
         return teamList.stream().map(this::addTeam).collect(Collectors.toList());
     }
 }

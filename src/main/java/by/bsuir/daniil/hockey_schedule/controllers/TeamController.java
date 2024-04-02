@@ -20,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/team")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TeamController {
 
     private TeamService teamService;
@@ -39,21 +40,25 @@ public class TeamController {
     @Operation(summary = "Поиск команды по ID",
             description = "Позволяет получить информацию о команде")
     @GetMapping("/{id}")
-    public ResponseEntity<TeamDTO> findById(@PathVariable @Parameter(description = "ID команды которую хотим найти") final Integer id) {
-        return new ResponseEntity<>(teamService.findTeamById(id), HttpStatus.OK);
+    public ResponseEntity<TeamDTOWithMatch> findById(
+            @PathVariable @Parameter(description = "ID команды которую хотим найти") final Integer id) {
+        TeamDTOWithMatch teamDTOWithMatchList = teamService.findTeamById(id);
+        return new ResponseEntity<>(teamDTOWithMatchList, HttpStatus.OK);
     }
 
     @Operation(summary = "Регистрация команды",
             description = "Позволяет зарегистрировать новую команду")
     @PostMapping("/create")
-    public ResponseEntity<TeamDTO> addTeam(@RequestBody @Parameter(description = "JSON объект новой команды") final Team newTeam) {
+    public ResponseEntity<TeamDTO> addTeam(
+            @RequestBody @Parameter(description = "JSON объект новой команды") final Team newTeam) {
         return new ResponseEntity<>(teamService.addTeam(newTeam), HttpStatus.OK);
     }
 
     @Operation(summary = "Удаление команды",
             description = "Позволяет удалить команду")
     @DeleteMapping("/delete")
-    public ResponseEntity<HttpStatus> deleteTeam(@RequestParam @Parameter(description = "ID команды которую нужно удалить") final Integer teamId) {
+    public ResponseEntity<HttpStatus> deleteTeam(
+            @RequestParam @Parameter(description = "ID команды которую нужно удалить") final Integer teamId) {
         teamService.deleteTeam(teamId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -61,21 +66,23 @@ public class TeamController {
     @Operation(summary = "Добавление матча",
             description = "Позволяет добавить новый матч в список")
     @PutMapping("/addMatch")
-    public ResponseEntity<TeamDTO> addInMatchList(@RequestParam @Parameter(description = "ID команды которую в которую нужно добавить") final Integer teamId,
-                                                  @RequestParam @Parameter(description = "ID матча который нужно добавить") final Integer matchId) {
+    public ResponseEntity<TeamDTO> addInMatchList(
+            @RequestParam @Parameter(description = "ID команды которую в которую нужно добавить") final Integer teamId,
+            @RequestParam @Parameter(description = "ID матча который нужно добавить") final Integer matchId) {
         return new ResponseEntity<>(teamService.addMatchInMatchList(teamId, matchId), HttpStatus.OK);
     }
 
     @Operation(summary = "Удаление матча",
             description = "Позволяет удлаить из списка матч")
     @PutMapping("/delMatch")
-    public ResponseEntity<TeamDTO> delInMatchList(@RequestParam @Parameter(description = "ID команды из которой нужно удалить") final Integer teamId,
-                                                  @RequestParam @Parameter(description = "ID матча который нужно удалить") final Integer matchId) {
+    public ResponseEntity<TeamDTO> delInMatchList(
+            @RequestParam @Parameter(description = "ID команды из которой нужно удалить") final Integer teamId,
+            @RequestParam @Parameter(description = "ID матча который нужно удалить") final Integer matchId) {
         return new ResponseEntity<>(teamService.delMatchInMatchList(teamId, matchId), HttpStatus.OK);
     }
 
     @PostMapping("/addListTeams")
-    public ResponseEntity<List<TeamDTO>> addMultipleCommand(@RequestBody ArrayList<Team> teamList){
+    public ResponseEntity<List<TeamDTO>> addMultipleCommand(@RequestBody ArrayList<Team> teamList) {
         return new ResponseEntity<>(teamService.addMultipleCommands(teamList), HttpStatus.OK);
     }
 }
