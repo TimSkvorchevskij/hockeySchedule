@@ -3,6 +3,7 @@ package by.bsuir.daniil.hockey_schedule.service;
 import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTO;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTOWithMatch;
+import by.bsuir.daniil.hockey_schedule.exception.BadRequestException;
 import by.bsuir.daniil.hockey_schedule.exception.ResourceNotFoundException;
 import by.bsuir.daniil.hockey_schedule.model.Arena;
 import by.bsuir.daniil.hockey_schedule.model.Match;
@@ -114,6 +115,14 @@ public class ArenaServiceTest {
     }
 
     @Test
+    public void testDeleteArenaError() {
+        when(arenaRepository.findById(1)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> {
+            arenaService.deleteArena(1);
+        });
+    }
+
+    @Test
     public void testUpdate() {
         // Готовим данные для теста
         Arena arena = new Arena();
@@ -136,5 +145,35 @@ public class ArenaServiceTest {
         Assertions.assertThrows(ResourceNotFoundException.class, () -> {
             arenaService.update(2, "newCity", 200);
         });
+    }
+
+    @Test
+    public void testCreateArena() {
+        // Arrange
+        Arena arena = new Arena();
+        arena.setId(1);
+        arena.setCity("Test City");
+
+        when(arenaRepository.save(any())).thenReturn(arena);
+
+        // Act
+        ArenaDTO result = arenaService.createArena(arena);
+
+        // Assert
+        verify(arenaRepository, times(1)).save(arena);
+        verify(cacheManager, times(1)).put(anyString(), any());
+        assertNotNull(result);
+        assertEquals(arena.getId(), result.getId());
+        assertEquals(arena.getCity(), result.getCity());
+    }
+
+    @Test
+    public void testCreateArenaEmptyCity() {
+        Arena arena = new Arena();
+        arena.setId(1);
+
+        assertThrows(BadRequestException.class, () -> arenaService.createArena(arena));
+        verify(arenaRepository, never()).save(arena);
+        verify(cacheManager, never()).put(anyString(), any());
     }
 }

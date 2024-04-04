@@ -27,7 +27,7 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
     private final CacheManager<String, Object> cacheManager;
-    private RequestCounterService counterService;
+    private final RequestCounterService counterService;
     private static final String TEAM_DOESNT_EXIST = "Team doesn't exist. ID = ";
     private static final String MATCH_DOESNT_EXIST = "Match doesn't exist. ID = ";
     private static final String TEAM_DTO = "teamDTO_";
@@ -37,13 +37,14 @@ public class TeamService {
     @AspectAnnotation
     public TeamDTO addTeam(final Team newTeam) {
         teamRepository.save(newTeam);
-        cacheManager.put(TEAM_DTO + newTeam.getId().toString(), ConvertDTOClasses.convertToTeamDTO(newTeam));
+        cacheManager.put(TEAM_DTO + newTeam.getId(), ConvertDTOClasses.convertToTeamDTO(newTeam));
         return ConvertDTOClasses.convertToTeamDTO(newTeam);
     }
 
     @AspectAnnotation
     public TeamDTOWithMatch findTeamById(final Integer teamId) {
         counterService.incrementCounter();
+        System.out.println(counterService.getCounter());
         return ConvertDTOClasses.convertToTeamDTOWithMatch(teamRepository.findById(teamId)
                 .orElseThrow(() -> new ResourceNotFoundException(TEAM_DOESNT_EXIST + teamId)));
 

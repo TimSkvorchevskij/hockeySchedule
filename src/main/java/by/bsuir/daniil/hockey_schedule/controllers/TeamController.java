@@ -19,7 +19,7 @@ import java.util.List;
         description = "You can add edit and view information about teams")
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/team")
+@RequestMapping("/api/v3/team")
 @CrossOrigin(origins = "http://localhost:3000")
 public class TeamController {
 

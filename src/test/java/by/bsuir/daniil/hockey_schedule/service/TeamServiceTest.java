@@ -1,9 +1,7 @@
 package by.bsuir.daniil.hockey_schedule.service;
 
-import static org.junit.Assert.*;
 
 import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
-import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithTeamAndArena;
 import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTO;
 import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTOWithMatch;
 import by.bsuir.daniil.hockey_schedule.exception.BadRequestException;
@@ -52,76 +50,186 @@ public class TeamServiceTest {
         TeamDTO teamDTO = teamService.addTeam(team);
         assertEquals(team.getId(), teamDTO.getId());
     }
+
+    @Test
+    void testFindTeamById() {
+        Integer teamId = 1;
+        Team team = new Team();
+        team.setId(teamId);
+        team.setTeamName("Meal");
+        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
+        TeamDTOWithMatch teamDTOWithMatch = teamService.findTeamById(teamId);
+        assertEquals(team.getId(), teamDTOWithMatch.getId());
+        assertEquals(team.getTeamName(), teamDTOWithMatch.getTeamName());
+    }
+    @Test
+    void testFindTeamByIdThrowsResourceNotFoundException() {
+        Integer teamId = 1;
+        when(teamRepository.findById(teamId)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> teamService.findTeamById(teamId));
+    }
+
+    @Test
+    public void deleteTeamTest() {
+        // Arrange
+        Integer teamId = 1;
+        Team team = new Team();
+        team.setId(teamId);
+        List<Team> teamList = new ArrayList<>();
+        teamList.add(team);
+
+        Match match1 = new Match();
+        match1.setId(1);
+        match1.setTeamList(teamList);
+
+
+        Match match2 = new Match();
+        match2.setId(2);
+        match2.setTeamList(teamList);
+
+        List<Match> matchList = new ArrayList<>();
+        matchList.add(match1);
+        matchList.add(match2);
+        team.setMatchList(matchList);
+
+        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
+
+        teamService.deleteTeam(teamId);
+
+        verify(teamRepository, times(1)).deleteById(teamId);
+        verify(matchRepository, times(2)).save(any(Match.class));
+        verify(cacheManager, times(1)).remove(anyString());
+    }
+
+    @Test
+    public void deleteTeamTestExceptionResourceNotFound() {
+        Integer teamId = 1;
+        when(teamRepository.findById(teamId)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> teamService.deleteTeam(teamId));
+    }
+
     @Test
     void addMatchInMatchListTest() {
         Integer teamId = 1;
-        Integer matchIdWithTwoTeams = 1;
+        Integer matchId = 1;
         Team team = new Team();
         team.setId(teamId);
-        Match matchWithTwoTeams = new Match();
-        matchWithTwoTeams.setTeamList(new ArrayList<>());
+        Match match = new Match();
+        match.setTeamList(new ArrayList<>());
+
         when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
+        when(matchRepository.findById(matchId)).thenReturn(Optional.of(match));
 
-        when(matchRepository.findById(matchIdWithTwoTeams)).thenReturn(Optional.of(matchWithTwoTeams));
-        matchWithTwoTeams.getTeamList().add(new Team());
-        matchWithTwoTeams.getTeamList().add(new Team());
-        assertThrows(BadRequestException.class, ()
-                -> teamService.addMatchInMatchList(teamId, matchIdWithTwoTeams));
+        Assertions.assertNotNull(teamService.addMatchInMatchList(teamId,matchId));
 
-        Integer matchIdContainTeam = 2;
-        Match matchContainTeam = new Match();
-        matchContainTeam.setId(matchIdContainTeam);
-        matchContainTeam.setTeamList(new ArrayList<>());
-        matchContainTeam.getTeamList().add(team);
-        when(matchRepository.findById(matchIdContainTeam)).thenReturn(Optional.of(matchContainTeam));
-        assertThrows(BadRequestException.class, ()
-                -> teamService.addMatchInMatchList(teamId, matchIdContainTeam));
 
         Integer matchIdWithOneTeam = 3;
         Match matchWithOneTeam = new Match();
         matchWithOneTeam.setId(3);
         matchWithOneTeam.setTeamList(new ArrayList<>());
         matchWithOneTeam.getTeamList().add(new Team());
+
         when(matchRepository.findById(matchIdWithOneTeam)).thenReturn(Optional.of(matchWithOneTeam));
         when(matchRepository.save(matchWithOneTeam)).thenReturn(matchWithOneTeam);
+
         Assertions.assertNotNull(teamService.addMatchInMatchList(teamId,matchIdWithOneTeam));
     }
 
-//    @Test
-//    void testFindTeamById() {
-//        Integer teamId = 1;
-//        Team team = new Team();
-//        team.setId(teamId);
-//        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
-//        TeamDTO teamDTO = teamService.findTeamById(teamId);
-//        assertEquals(team.getId(), teamDTO.getId());
-//    }
-
     @Test
-    void testFindTeamByIdThrowsResourceNotFoundException() {
-        Integer teamId = 1;
-        when(teamRepository.findById(teamId)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> teamService.findTeamById(teamId));
-    }
-    @Test
-    void testAddMatchInMatchList() {
+    void testAddMatchInMatchListWithError() {
         Integer teamId = 1;
         Integer matchId = 1;
         Team team = new Team();
         team.setId(teamId);
         Match match = new Match();
         match.setId(matchId);
-        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
+        when(teamRepository.findById(teamId)).thenReturn(Optional.empty());
         when(matchRepository.findById(matchId)).thenReturn(Optional.of(match));
 
-        TeamDTO teamDTO = teamService.addMatchInMatchList(teamId, matchId);
+        assertThrows(ResourceNotFoundException.class, ()
+                -> teamService.addMatchInMatchList(teamId, matchId));
 
-//        assertNotNull(teamDTO);
-        // Проверки могут быть расширены в зависимости от ваших требований
+        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
+        when(matchRepository.findById(matchId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, ()
+                -> teamService.addMatchInMatchList(teamId, matchId));
+
+        List<Team> teamList = new ArrayList<>();
+        teamList.add(team);
+        match.setTeamList(teamList);
+        when(matchRepository.findById(matchId)).thenReturn(Optional.of(match));
+        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
+
+        assertThrows(BadRequestException.class, ()
+                -> teamService.addMatchInMatchList(teamId, matchId));
+
+        List<Team> teamListWithTwoTeams = new ArrayList<>();
+        teamListWithTwoTeams.add(new Team());
+        teamListWithTwoTeams.add(new Team());
+        match.setTeamList(teamListWithTwoTeams);
+        when(matchRepository.findById(matchId)).thenReturn(Optional.of(match));
+        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
+
+        assertThrows(BadRequestException.class, ()
+                -> teamService.addMatchInMatchList(teamId, matchId));
+
     }
 
-    // Пример теста для метода getAllTeams
+    @Test
+    public void testDelMatchInMatchList() {
+        Integer teamId = 1;
+        Integer matchId = 1;
+
+        Team team = new Team();
+        team.setId(teamId);
+
+        Match match = new Match();
+        match.setId(matchId);
+        match.setTeamList(new ArrayList<>());
+        match.getTeamList().add(team);
+
+        when(matchRepository.findById(matchId)).thenReturn(Optional.of(match));
+        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
+
+        TeamDTO result = teamService.delMatchInMatchList(teamId, matchId);
+
+        verify(matchRepository, times(1)).findById(matchId);
+        verify(teamRepository, times(2)).findById(teamId);
+        verify(matchRepository, times(1)).save(match);
+        assertEquals(teamId, result.getId());
+
+        when(teamRepository.findById(teamId)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, ()
+                -> teamService.delMatchInMatchList(teamId, matchId));
+
+        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
+        when(matchRepository.findById(matchId)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, ()
+                -> teamService.delMatchInMatchList(teamId, matchId));
+
+    }
+
+    @Test
+    public void testAddMultipleCommands() {
+        Team team1 = new Team();
+        team1.setId(1);
+        Team team2 = new Team();
+        team2.setId(2);
+        ArrayList<Team> teamList = new ArrayList<>();
+        teamList.add(team1);
+        teamList.add(team2);
+
+        when(teamRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        List<TeamDTO> result = teamService.addMultipleCommands(teamList);
+
+        verify(teamRepository, times(2)).save(any());
+        assertEquals(2, result.size());
+        assertEquals(team1.getId(), result.get(0).getId());
+        assertEquals(team2.getId(), result.get(1).getId());
+    }
+
     @Test
     void testGetAllTeams() {
         List<Team> teams = new ArrayList<>();

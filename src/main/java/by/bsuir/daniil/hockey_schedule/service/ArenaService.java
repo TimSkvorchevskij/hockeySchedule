@@ -28,7 +28,7 @@ public class ArenaService {
     private final ArenaRepository arenaRepository;
     private final CacheManager<String, Object> cacheManager;
     private final MatchRepository matchRepository;
-    private RequestCounterService counterService;
+    private final RequestCounterService counterService;
     private static final String ARENA_DTO = "arenaDTO";
     private static final String DOESNT_EXIST = "Arena doesn't exist ID = ";
 
@@ -79,14 +79,14 @@ public class ArenaService {
         Object cachedData = cacheManager.get(ARENA_DTO + arenaId.toString());
         counterService.incrementCounter();
         System.out.println(counterService.getCounter());
-        if (cachedData != null) {
-            return (ArenaDTO) cachedData;
-        } else {
+//        if (cachedData != null) {
+//            return (ArenaDTO) cachedData;
+//        } else {
             ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arenaRepository.findById(arenaId)
                     .orElseThrow(() -> new ResourceNotFoundException(DOESNT_EXIST + arenaId)));
             cacheManager.put(ARENA_DTO + arenaId, arenaDTO);
             return arenaDTO;
-        }
+//        }
     }
 
     @AspectAnnotation

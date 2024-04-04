@@ -2,6 +2,7 @@ package by.bsuir.daniil.hockey_schedule.service;
 
 import by.bsuir.daniil.hockey_schedule.aspect.AspectAnnotation;
 import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
+import by.bsuir.daniil.hockey_schedule.counter.RequestCounterService;
 import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
 
 import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithArena;
@@ -30,16 +31,19 @@ public class MatchService {
     private final ArenaRepository arenaRepository;
     private final TeamRepository teamRepository;
     private final CacheManager<String, Object> cacheManager;
+    private RequestCounterService counterService;
     private static final String MATCH_DTO = "matchDTOWithTeamAndArena_";
     private static final String DOESNT_EXIST = "Match doesn't exist ID = ";
 
     public List<MatchDTOWithTeamAndArena> getAllMatches() {
+        counterService.incrementCounter();
         List<MatchDTOWithTeamAndArena> matchDTOWithTeamAndArenaList = new ArrayList<>();
         for (Match match : matchRepository.findAll()) {
             MatchDTOWithTeamAndArena matchDTOWithTeamAndArena = ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match);
             matchDTOWithTeamAndArenaList.add(matchDTOWithTeamAndArena);
             cacheManager.put(MATCH_DTO + match.getId().toString(), matchDTOWithTeamAndArena);
         }
+        System.out.println(counterService.getCounter());
         return matchDTOWithTeamAndArenaList;
     }
 
@@ -97,6 +101,8 @@ public class MatchService {
 
     @AspectAnnotation
     public MatchDTOWithTeamAndArena findById(final Integer id) {
+        counterService.incrementCounter();
+        System.out.println(counterService.getCounter());
         Object cachedData = cacheManager.get(MATCH_DTO + id.toString());
         if (cachedData != null) {
             return (MatchDTOWithTeamAndArena) cachedData;

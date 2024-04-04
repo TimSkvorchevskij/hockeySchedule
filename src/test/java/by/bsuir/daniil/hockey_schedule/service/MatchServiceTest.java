@@ -59,7 +59,6 @@ public class MatchServiceTest {
         when(matchRepository.findAll()).thenReturn(Collections.emptyList());
         List<MatchDTOWithTeamAndArena> resultWithEmptyList = matchService.getAllMatches();
         assertEquals(0, resultWithEmptyList.size());
-
     }
 
     @Test
@@ -73,6 +72,13 @@ public class MatchServiceTest {
         matchWithTeams.setTeamList(new ArrayList<>());
         matchWithTeams.getTeamList().add(new Team());
         matchWithTeams.getTeamList().add(new Team());
+
+        when(teamRepository.save(any())).thenReturn(any());
+        when(matchRepository.save(matchWithTeams)).thenReturn(matchWithTeams);
+
+        MatchDTOWithTeamAndArena resultWithTeams = matchService.addMatch(matchWithTeams);
+        assertEquals(2, resultWithTeams.getTeamDTOList().size());
+
         matchWithTeams.getTeamList().add(new Team());
         Assertions.assertThrows(BadRequestException.class, () -> {
             matchService.addMatch(matchWithTeams);

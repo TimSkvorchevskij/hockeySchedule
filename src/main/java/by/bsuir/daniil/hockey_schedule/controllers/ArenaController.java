@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +19,8 @@ import java.util.List;
 @Tag(name = "ArenaController",
         description = "You can add edit and view information about arenas")
 @AllArgsConstructor
-@RestController
-@RequestMapping("api/v1/arena")
+@Controller
+@RequestMapping("api/v1/arena2")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ArenaController {
 
