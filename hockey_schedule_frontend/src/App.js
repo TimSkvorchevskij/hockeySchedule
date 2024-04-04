@@ -4,12 +4,10 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-import { AddArena, DeleteArena, GetAllArenas, GetArenaByCapacity, GetArenaById, UpdateArena } from './components/ArenaController';
-import AppBarButton from './components/ButtonAppBar';
-import { AddMatch, DeleteMatch, GetAllMatches, GetMatchById, SetNewArenaForMatch } from './components/MatchController';
-import { AddMatchInMatchList, AddTeam, DeleteMatchInMatchList, DeleteTeam, GetAllTeams, GetTeamById } from './components/TeamController';
 import { Match } from './pages/Match';
 import { MainPage } from './pages/MainPage';
+import { Arena } from './pages/Arena';
+import { Team } from './pages/Team';
 
 
 
@@ -19,33 +17,9 @@ export default function App() {
       <Routes>
           <Route path="/" element={<MainPage />}/>
           <Route path="match" element={<Match />}/>
-          <Route path="one" element={<DeleteArena />} />
-          <Route path="two" element={<AddMatchInMatchList />} />
+          <Route path="arena" element={<Arena />} />
+          <Route path="team" element={<Team />} />
       </Routes>
     </BrowserRouter>
   );
-    // <div className='App'>
-    //   <AppBarButton />
-    //   <AddTeam />
-    //   <GetTeamById />
-    //   <DeleteTeam />
-    //   <GetAllTeams />
-    //   <AddMatchInMatchList />
-    //   <DeleteMatchInMatchList />
-
-    //   <AddMatch />
-      {/* <GetMatchById /> */}
-      {/* <GetAllMatches /> */}
-      {/* <DeleteMatch /> */}
-      {/* <SetNewArenaForMatch /> */}
-
-      {/* <UpdateArena /> */}
-      {/*<GetArenaById />
-      <GetArenaByCapacity />
-      
-      <DeleteArena />
-  <GetAllArenas />*/}
-      
-    // </div>
-  // );
 }

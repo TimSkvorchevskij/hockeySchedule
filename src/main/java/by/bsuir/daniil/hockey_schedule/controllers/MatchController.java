@@ -18,7 +18,7 @@ import java.util.List;
         description = "You can add edit and view information about matches")
 //@AllArgsConstructor
 @RestController
-@RequestMapping("/api/v2/match")
+@RequestMapping("/api/v1/match")
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 public class MatchController {

@@ -19,8 +19,8 @@ import java.util.List;
 @Tag(name = "ArenaController",
         description = "You can add edit and view information about arenas")
 @AllArgsConstructor
-@Controller
-@RequestMapping("api/v1/arena2")
+@RestController
+@RequestMapping("api/v1/arena")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ArenaController {
 
