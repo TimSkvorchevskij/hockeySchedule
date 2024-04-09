@@ -17,8 +17,6 @@ import by.bsuir.daniil.hockey_schedule.repository.TeamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.xml.crypto.dsig.dom.DOMSignContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
