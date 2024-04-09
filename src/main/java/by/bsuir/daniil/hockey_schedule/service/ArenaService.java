@@ -2,8 +2,8 @@ package by.bsuir.daniil.hockey_schedule.service;
 
 
 import by.bsuir.daniil.hockey_schedule.aspect.AspectAnnotation;
+import by.bsuir.daniil.hockey_schedule.aspect.RequestCounterAnnotation;
 import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
-import by.bsuir.daniil.hockey_schedule.counter.RequestCounterService;
 import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTO;
 import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTOWithMatch;
@@ -28,7 +28,6 @@ public class ArenaService {
     private final ArenaRepository arenaRepository;
     private final CacheManager<String, Object> cacheManager;
     private final MatchRepository matchRepository;
-    private final RequestCounterService counterService;
     private static final String ARENA_DTO = "arenaDTO";
     private static final String DOESNT_EXIST = "Arena doesn't exist ID = ";
 
@@ -74,19 +73,18 @@ public class ArenaService {
         return arenaDTOList;
     }
 
+    @RequestCounterAnnotation
     @AspectAnnotation
     public ArenaDTO getArenaById(final Integer arenaId) {
         Object cachedData = cacheManager.get(ARENA_DTO + arenaId.toString());
-        counterService.incrementCounter();
-        System.out.println(counterService.getCounter());
-//        if (cachedData != null) {
-//            return (ArenaDTO) cachedData;
-//        } else {
+        if (cachedData != null) {
+            return (ArenaDTO) cachedData;
+        } else {
             ArenaDTO arenaDTO = ConvertDTOClasses.convertToArenaDTO(arenaRepository.findById(arenaId)
                     .orElseThrow(() -> new ResourceNotFoundException(DOESNT_EXIST + arenaId)));
             cacheManager.put(ARENA_DTO + arenaId, arenaDTO);
             return arenaDTO;
-//        }
+        }
     }
 
     @AspectAnnotation

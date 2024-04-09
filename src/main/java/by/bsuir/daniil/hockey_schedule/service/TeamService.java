@@ -2,7 +2,6 @@ package by.bsuir.daniil.hockey_schedule.service;
 
 import by.bsuir.daniil.hockey_schedule.aspect.AspectAnnotation;
 import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
-import by.bsuir.daniil.hockey_schedule.counter.RequestCounterService;
 import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
 import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTO;
 import by.bsuir.daniil.hockey_schedule.dto.team.TeamDTOWithMatch;
@@ -27,7 +26,6 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
     private final CacheManager<String, Object> cacheManager;
-    private final RequestCounterService counterService;
     private static final String TEAM_DOESNT_EXIST = "Team doesn't exist. ID = ";
     private static final String MATCH_DOESNT_EXIST = "Match doesn't exist. ID = ";
     private static final String TEAM_DTO = "teamDTO_";
@@ -43,8 +41,6 @@ public class TeamService {
 
     @AspectAnnotation
     public TeamDTOWithMatch findTeamById(final Integer teamId) {
-        counterService.incrementCounter();
-        System.out.println(counterService.getCounter());
         return ConvertDTOClasses.convertToTeamDTOWithMatch(teamRepository.findById(teamId)
                 .orElseThrow(() -> new ResourceNotFoundException(TEAM_DOESNT_EXIST + teamId)));
 

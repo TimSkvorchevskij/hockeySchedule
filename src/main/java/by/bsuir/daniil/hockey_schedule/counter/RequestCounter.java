@@ -1,7 +1,10 @@
 package by.bsuir.daniil.hockey_schedule.counter;
 
+import org.springframework.stereotype.Component;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Component
 public class RequestCounter {
     private final AtomicInteger count = new AtomicInteger(0);
 

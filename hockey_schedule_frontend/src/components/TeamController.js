@@ -7,7 +7,6 @@ import moment from 'moment';
 export function AddTeam() {
     const paperStyle = {padding:"20px 20px", width:600, margin:"20px auto"}
     const [teamName,setTeamName] = React.useState()
-    const [team, setTeam] = React.useState()
 
     const handleClick = (e) => {
         e.preventDefault()
@@ -86,7 +85,6 @@ export function GetTeamById() {
             <Paper elevation={6} style={{ margin: "10px", padding: "15px", textAlign: "left" }} key={match.id}>
                 <p><b>Id:</b> {match.id}</p>
                 <p><b>Date and Time:</b> { match.dateTime ? moment(match.dateTime).format('DD-MM-YYYY HH:mm') : "undefined"}</p>
-                {/* <p><b>Arena:</b> {match.arenaDTO ? showArena(match) : "undefined"}</p> */}
             </Paper>
             ))}
            </div>
@@ -97,10 +95,6 @@ export function GetTeamById() {
         <Paper elevation={3} style={paperStyle}>
             <h1>FIND TEAM BY ID:</h1>
             {team && (
-                // <Paper elevation={6} style={{ margin: "50px", padding: "15px", textAlign: "left" }} key={team.id}>
-                    // Id: {team.id} <br />
-                    // Team name: {team.teamName} <br />
-                // </Paper>
                 <Paper elevation={6} style={{margin:"10px", padding:"15px", textAlign:"left"}} key={team.id}>
                 Id:{team.id}<br/>
                 Team name:{team.teamName}<br/>
@@ -190,7 +184,6 @@ export function GetAllTeams(){
             <Paper elevation={6} style={{ margin: "10px", padding: "15px", textAlign: "left" }} key={match.id}>
                 <p><b>Id:</b> {match.id}</p>
                 <p><b>Date and Time:</b> { match.dateTime ? moment(match.dateTime).format('DD-MM-YYYY HH:mm') : "undefined"}</p>
-                {/* <p><b>Arena:</b> {match.arenaDTO ? showArena(match) : "undefined"}</p> */}
             </Paper>
             ))}
            </div>
@@ -259,7 +252,7 @@ export function AddMatchInMatchList() {
                 onChange={(e) => setTeamId(e.target.value)}
             />
             <br />
-            <TextField id="outlined-basic" label="Enter match ID" variant="outlined" style={{marginLeft:'10px'}}
+            <TextField id="outlined-basic" label="Enter match ID" variant="outlined"
                 value={matchId}
                 onChange={(e) => setMatchId(e.target.value)}
             />
@@ -312,7 +305,7 @@ export function DeleteMatchInMatchList() {
                 onChange={(e) => setTeamId(e.target.value)}
             />
             <br />
-            <TextField id="outlined-basic" label="Enter match ID" variant="outlined" style={{marginLeft:'10px'}}
+            <TextField id="outlined-basic" label="Enter match ID" variant="outlined" 
                 value={matchId}
                 onChange={(e) => setMatchId(e.target.value)}
             />
@@ -323,62 +316,5 @@ export function DeleteMatchInMatchList() {
         </Paper>
     );
 }
-// export function UpdateArena() {
-//     const paperStyle = { padding: "5px 20px", width: 600, margin: "20px auto" };
-//     const [arenaId, setArenaId] = React.useState("");
-//     const [city, setCity] = React.useState("");
-//     const [capacity, setCapacity] = React.useState("");
-//     const [arena, setArena] = React.useState(null);
-
-//     const updateArenaParams = (id,city, capacity) => {
-
-//         fetch(`http://localhost:8080/api/v1/arena/change?arenaId=${id}&city=${city}&capacity=${capacity}`, {
-//             method: "PUT"
-//         })
-//         .then(res => {
-//             if (res.ok) {
-//                 return res.json();
-//             } else {
-//                 throw new Error("Arena not found");
-//             }
-//         })
-//         .then(result => {
-//             setArena(result);
-//         })
-//         .catch(error => {
-//             setArena(null);
-//         });
-//     };
-
-//     return (
-//         <Paper elevation={3} style={paperStyle}>
-//             <h1>UPDATE ARENA BY ID:</h1>
-//             {arena && (
-//                 <Paper elevation={6} style={{ margin: "50px", padding: "15px", textAlign: "left" }} key={arena.id}>
-//                     Id: {arena.id} <br />
-//                     City: {arena.city} <br />
-//                     Capacity: {arena.capacity} <br />
-//                 </Paper>
-//             )}
-//                 <TextField id="outlined-basic" label="Enter arena ID(required)" variant="outlined" style={{marginBottom:'10px'}}
-//                 value={arenaId}
-//                 onChange={(e) => setArenaId(e.target.value)}
-//             />
-//             <br />
-//             <TextField id="outlined-basic" label="Enter new city" variant="outlined" style={{marginLeft:'10px'}}
-//                 value={city}
-//                 onChange={(e) => setCity(e.target.value)}
-//             />
-//             <TextField id="outlined-basic" label="Enter new capacity" variant="outlined" style={{marginLeft:'10px'}}
-//                 value={capacity}
-//                 onChange={(e) => setCapacity(e.target.value)}
-//             />
-//             <br />
-//             <Button variant="contained" style={{ margin: "20px" }} onClick={() => updateArenaParams(arenaId, city, capacity)}>
-//                 FIND
-//             </Button>
-//         </Paper>
-//     );
-// }
 
 

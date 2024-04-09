@@ -1,5 +1,6 @@
 package by.bsuir.daniil.hockey_schedule.aspect;
 
+
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.aspectj.lang.JoinPoint;
@@ -7,6 +8,7 @@ import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 
 import java.util.Arrays;
 
@@ -23,9 +25,9 @@ public class LoggingAspect {
     @Before(value = "callAtMyServiceAnnotation()")
     public void logBefore(final JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
-        String methodName = joinPoint.toString() + " "
+        String methodName = joinPoint + " "
                 + joinPoint.getSignature().getName();
-        logger.info(">> {}() - {}", methodName, Arrays.toString(args));
+        logger.info(">> {}() - {}\n", methodName, Arrays.toString(args));
     }
 
     @AfterReturning(value = "callAtMyServiceAnnotation()", returning = "result")

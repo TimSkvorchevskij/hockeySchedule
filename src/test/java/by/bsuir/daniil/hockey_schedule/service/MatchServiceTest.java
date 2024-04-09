@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
+import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTO;
 import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithArena;
 import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithTeamAndArena;
 import by.bsuir.daniil.hockey_schedule.exception.BadRequestException;
@@ -135,6 +136,17 @@ public class MatchServiceTest {
         when(cacheManager.get("matchDTOWithTeamAndArena_" + id)).thenReturn(matchDTO);
         MatchDTOWithTeamAndArena result = matchService.findById(id);
         assertNotNull(result);
+
+        when(cacheManager.get("matchDTOWithTeamAndArena_" + id)).thenReturn(null);
+        Match match = new Match();
+        match.setId(id);
+        matchDTO.setId(id);
+        matchDTO.setTeamDTOList(new ArrayList<>());
+        when(matchRepository.findById(id)).thenReturn(Optional.of(match));
+        when(cacheManager.put("matchDTOWithTeamAndArena_" + id, matchDTO)).thenReturn(null);
+        MatchDTOWithTeamAndArena result2 = matchService.findById(id);
+        assertNotNull(result2);
+
 
 
 

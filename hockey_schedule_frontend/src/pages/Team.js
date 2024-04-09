@@ -22,10 +22,14 @@ export function Team () {
                 <Link style={linkStyle} to="/match">Match</Link>
                 <Link style={linkStyle} to="/arena">Arena</Link>
                 <Link style={linkStyle} to="/team">Team</Link>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center', marginRight: '300px' }}>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center', marginRight: '200px' }}>
                 TeamController
             </Typography>
+            <Link style={{ textAlign:'right', color: 'white', textDecoration: 'none', padding: '5px 5px', fontWeight: 'bold' }} to="/">
+                    Home
+                </Link>
             </Toolbar>
+
         </AppBar>
         <AddTeam />
         <DeleteTeam />

@@ -69,15 +69,31 @@ export function AddMatch() {
         });
     };
 
+    const setTeamList = () => {
+        console.log (homeTeam, guestTeam)
+        if (isNaN(parseInt(homeTeamId)) && isNaN(parseInt(guestTeamId))) {
+            console.log ("Return null")
+            return null;
+        } else if (isNaN(parseInt(guestTeamId))) {
+            console.log ("homeId")
+            return [{ id: parseInt(homeTeamId) }];
+        } else if (isNaN(parseInt(homeTeamId))) {
+            console.log ("guestID")
+            return [{ id: parseInt(guestTeamId) }];
+        } else {
+            console.log ("Return homaAndTeam")
+            return [{ id: parseInt(homeTeamId) }, { id: parseInt(guestTeamId) }];
+        }
+    }
+    
+
     const saveMatch = (e) => {
         e.preventDefault();
         const newMatch = {
-            dateTime: selectedDate.format('YYYY-MM-DD') + 'T' + selectedTime.format('HH:mm'), // Объединяем дату и время
-            teamList: [
-                { id: parseInt(homeTeamId) }, // Преобразуем ID команды в числовой формат и создаем объект команды
-                { id: parseInt(guestTeamId) } // Преобразуем ID команды в числовой формат и создаем объект команды
-            ],
-            arena: { id: parseInt(arenaId) }// Преобразуем ID арены в числовой формат и создаем объект арены
+            dateTime: selectedDate && selectedTime ? selectedDate.format('YYYY-MM-DD') + 'T' + selectedTime.format('HH:mm') : null, // Объединяем дату и время
+            teamList: setTeamList(),
+            arena: arenaId ? { id: parseInt(arenaId) } : null
+
         };
         
         console.log('New match:', newMatch);
@@ -379,9 +395,6 @@ export function SetNewArenaForMatch() {
     const [arenaId, setArenaId] = React.useState("");
     const [matchId, setMatchId] = React.useState("");
     const [match, setMatch] = React.useState("");
-    
-    // const [capacity, setCapacity] = React.useState("");
-    // const [arena, setArena] = React.useState(null);
 
     const setNewArena = () => {
 
@@ -410,7 +423,7 @@ export function SetNewArenaForMatch() {
                     <Paper elevation={6} style={{margin:"10px", padding:"15px", textAlign:"left"}} key={team.id}>
                         Id:{team.id}<br/>
                         name:{team.teamName}<br/>
-                </Paper>
+                    </Paper>
                 ))}
             </div>
         )
@@ -445,7 +458,7 @@ export function SetNewArenaForMatch() {
                 onChange={(e) => setMatchId(e.target.value)}
             />
             <br />
-            <TextField id="outlined-basic" label="Enter new arena ID" variant="outlined" style={{marginLeft:'10px'}}
+            <TextField id="outlined-basic" label="Enter new arena ID" variant="outlined" style={{}}
                 value={arenaId}
                 onChange={(e) => setArenaId(e.target.value)}
             />
@@ -456,164 +469,3 @@ export function SetNewArenaForMatch() {
         </Paper>
     );
 }
-
-// export function GetArenaByCapacity() {
-//     const paperStyle = { padding: "5px 20px", width: 600, margin: "20px auto" };
-//     const [minCapacity, setMinCapacity] = React.useState("");
-//     const [maxCapacity, setMaxCapacity] = React.useState("");
-//     const [arenas, setArenas] = React.useState([]);
-
-//     const findArenaByCapacity = (min, max) => {
-
-//         fetch(`http://localhost:8080/api/v1/arena/search/capacity?moreThan=${min}&lessThan=${max}`, {
-//             method: "GET"
-//         })
-//         .then(res => {
-//             if (res.ok) {
-//                 return res.json();
-//             } else {
-//                 throw new Error("Arena not found");
-//             }
-//         })
-//         .then(result => {
-//             setArenas(result);
-//         })
-//         .catch(error => {
-//             setArenas([]);
-//         });
-//     };
-
-//     return (
-//         <Paper elevation={3} style={paperStyle}>
-//             <h1>FIND ARENA BY CAPACITY:</h1>
-//             { arenas !== null && (
-//             <div style={{marginBottom:"35px"}}>
-//                 { arenas.map(arena=> (
-//                 <Paper elevation={6} style={{ margin: "5px", padding: "15px", textAlign: "left" }} key={arena.id}>
-//                     Id: {arena.id} <br />
-//                     City: {arena.city} <br />
-//                     Capacity: {arena.capacity} <br />
-//                 </Paper>
-//             ))}
-//             </div>
-//             )}
-//                 <TextField id="outlined-basic" label="Enter min capacity" variant="outlined" style={{marginRight:'10px'}}
-//                 value={minCapacity}
-//                 onChange={(e) => setMinCapacity(e.target.value)}
-//             />
-//             <TextField id="outlined-basic" label="Enter max capacity" variant="outlined" style={{marginLeft:'10px'}}
-//                 value={maxCapacity}
-//                 onChange={(e) => setMaxCapacity(e.target.value)}
-//             />
-//             <br />
-//             <Button variant="contained" style={{ margin: "20px" }} onClick={() => findArenaByCapacity(minCapacity,maxCapacity)}>
-//                 FIND
-//             </Button>
-//         </Paper>
-//     );
-// }
-
-// export function DeleteArena(){
-//     const paperStyle = {padding:"5px 20px", width:600, margin:"20px auto"}
-//     const [arenaId,setArenaId] = React.useState([])
-
-//     const handleDeleteArena = (id) => {
-//         fetch(`http://localhost:8080/api/v1/arena/delete?id=${id}`, {
-//             method: "DELETE"
-//         })
-//         .then(response => {
-//             if (response.ok) {
-//                 console.log("Arena deleted successfully");
-//             } else {
-//                 console.error("Failed to delete arena");
-//             }
-//         })
-//         .catch(error => {
-//             console.error("Error deleting arena:", error);
-//         });
-//     };
-
-//     return (
-//         <Container>
-//             <Paper elevation={3} style={paperStyle}>
-//         <Box
-//           component="form"
-//           sx={{
-//             '& > :not(style)': { m: 1 },
-//           }}
-//           noValidate
-//           autoComplete="off"
-//           >
-//             <h1>DELETE ARENA BY ID</h1>
-//             <TextField id="outlined-basic" label="Enter the arena ID" variant="outlined" 
-//             value={arenaId}
-//             onChange={(e)=>setArenaId(e.target.value)}
-//             />
-//             <br />
-//             <Button variant="contained" onClick={() => handleDeleteArena(arenaId)}>
-//                 Delete 
-//             </Button>
-//         </Box>
-//         </Paper>
-//         </Container>
-//       );
-// }
-
-// export function UpdateArena() {
-//     const paperStyle = { padding: "5px 20px", width: 600, margin: "20px auto" };
-//     const [arenaId, setArenaId] = React.useState("");
-//     const [city, setCity] = React.useState("");
-//     const [capacity, setCapacity] = React.useState("");
-//     const [arena, setArena] = React.useState(null);
-
-//     const updateArenaParams = (id,city, capacity) => {
-
-//         fetch(`http://localhost:8080/api/v1/arena/change?arenaId=${id}&city=${city}&capacity=${capacity}`, {
-//             method: "PUT"
-//         })
-//         .then(res => {
-//             if (res.ok) {
-//                 return res.json();
-//             } else {
-//                 throw new Error("Arena not found");
-//             }
-//         })
-//         .then(result => {
-//             setArena(result);
-//         })
-//         .catch(error => {
-//             setArena(null);
-//         });
-//     };
-
-//     return (
-//         <Paper elevation={3} style={paperStyle}>
-//             <h1>UPDATE ARENA BY ID:</h1>
-//             {arena && (
-//                 <Paper elevation={6} style={{ margin: "50px", padding: "15px", textAlign: "left" }} key={arena.id}>
-//                     Id: {arena.id} <br />
-//                     City: {arena.city} <br />
-//                     Capacity: {arena.capacity} <br />
-//                 </Paper>
-//             )}
-//                 <TextField id="outlined-basic" label="Enter arena ID(required)" variant="outlined" style={{marginBottom:'10px'}}
-//                 value={arenaId}
-//                 onChange={(e) => setArenaId(e.target.value)}
-//             />
-//             <br />
-//             <TextField id="outlined-basic" label="Enter new city" variant="outlined" style={{marginLeft:'10px'}}
-//                 value={city}
-//                 onChange={(e) => setCity(e.target.value)}
-//             />
-//             <TextField id="outlined-basic" label="Enter new capacity" variant="outlined" style={{marginLeft:'10px'}}
-//                 value={capacity}
-//                 onChange={(e) => setCapacity(e.target.value)}
-//             />
-//             <br />
-//             <Button variant="contained" style={{ margin: "20px" }} onClick={() => updateArenaParams(arenaId, city, capacity)}>
-//                 FIND
-//             </Button>
-//         </Paper>
-//     );
-// }
-

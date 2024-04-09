@@ -59,7 +59,14 @@ public class ArenaServiceTest {
         arena.setId(1);
         arena.setCity("TestCity");
         arena.setCapacity(100);
+        ArenaDTO arenaDTO = new ArenaDTO();
+        arenaDTO.setId(2);
 
+        when(cacheManager.get(anyString())).thenReturn(arenaDTO);
+        assertEquals(arenaDTO.getId(),arenaService.getArenaById(2).getId());
+
+
+        when(cacheManager.get(anyString())).thenReturn(null);
         when(arenaRepository.findById(1)).thenReturn(Optional.of(arena));
         ArenaDTO result = arenaService.getArenaById(1);
 
