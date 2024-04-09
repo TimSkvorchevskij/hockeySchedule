@@ -36,4 +36,4 @@ build/
 .mvn
 mvnw
 mvnw.cmd
-../logfile.log
+logfile.log
