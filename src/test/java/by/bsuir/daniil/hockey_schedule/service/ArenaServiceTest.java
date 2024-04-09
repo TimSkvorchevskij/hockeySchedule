@@ -92,8 +92,15 @@ public class ArenaServiceTest {
         List<ArenaDTO> result = arenaService.getArenaByCapacity(minValue, maxValue);
         assertEquals(2, result.size());
 
+        when(arenaRepository.findArenaByMinAndMaxCapacity(null,maxValue)).thenReturn(arenas);
+        List<ArenaDTO> result2 = arenaService.getArenaByCapacity(null, maxValue);
+        assertEquals(2, result2.size());
+
+
         List<ArenaDTO> resultBadRequest = arenaService.getArenaByCapacity(maxValue, minValue);
         assertEquals(0, resultBadRequest.size());
+
+
 
     }
 
