@@ -77,8 +77,8 @@ public class MatchService {
 
     @AspectAnnotation
     public void deleteMatch(final Integer delMatchId) {
-        matchRepository.findById(delMatchId).orElseThrow(()
-                -> new ResourceNotFoundException(DOESNT_EXIST + delMatchId));
+        matchRepository.findById(delMatchId).orElseThrow(() ->
+                new ResourceNotFoundException(DOESNT_EXIST + delMatchId));
         matchRepository.deleteById(delMatchId);
         cacheManager.remove(MATCH_DTO + delMatchId);
     }
