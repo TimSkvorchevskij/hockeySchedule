@@ -82,7 +82,7 @@ public class TeamController {
     }
 
     @PostMapping("/addListTeams")
-    public ResponseEntity<List<TeamDTO>> addMultipleCommand(@RequestBody ArrayList<Team> teamList) {
+    public ResponseEntity<List<TeamDTO>> addMultipleCommand(@RequestBody List<Team> teamList) {
         return new ResponseEntity<>(teamService.addMultipleCommands(teamList), HttpStatus.OK);
     }
 }

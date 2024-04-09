@@ -18,8 +18,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.crypto.dsig.dom.DOMSignContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -77,9 +79,14 @@ public class MatchService {
 
     @AspectAnnotation
     public void deleteMatch(final Integer delMatchId) {
-        Match match = matchRepository.findById(delMatchId).orElseThrow(() ->
-                new ResourceNotFoundException(DOESNT_EXIST + delMatchId));
-        matchRepository.deleteById(delMatchId);
+        Optional<Match> matchOptional = matchRepository.findById(delMatchId);
+        if (matchOptional.isPresent()) {
+            matchRepository.deleteById(delMatchId);
+            // Дополнительные действия...
+        } else {
+            // Если матч не найден, бросаем исключение или выполняем другую логику
+            throw new ResourceNotFoundException(DOESNT_EXIST + delMatchId);
+        }
         cacheManager.remove(MATCH_DTO + delMatchId);
     }
 

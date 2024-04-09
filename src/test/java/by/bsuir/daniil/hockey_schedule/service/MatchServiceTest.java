@@ -26,7 +26,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MatchServiceTest {
+class MatchServiceTest {
 
     @Mock
     private MatchRepository matchRepository;
@@ -44,7 +44,7 @@ public class MatchServiceTest {
     private MatchService matchService;
 
     @Test
-    public void testGetAllMatches() {
+    void testGetAllMatches() {
         List<Match> matches = new ArrayList<>();
         Match match1 = new Match();
         Match match2 = new Match();
@@ -63,7 +63,7 @@ public class MatchServiceTest {
     }
 
     @Test
-    public void testAddMatch() {
+    void testAddMatch() {
         Match match = new Match();
         when(matchRepository.save(match)).thenReturn(match);
         MatchDTOWithTeamAndArena result = matchService.addMatch(match);
@@ -87,7 +87,7 @@ public class MatchServiceTest {
     }
 
     @Test
-    public void testDeleteMatch() {
+    void testDeleteMatch() {
         Integer delMatchId = 1;
         Match delMatch = new Match();
         when(matchRepository.findById(1)).thenReturn(Optional.of(delMatch));
@@ -100,7 +100,7 @@ public class MatchServiceTest {
     }
 
     @Test
-    public void testSetNewArena() {
+    void testSetNewArena() {
         Integer matchId = 1;
         Integer newArenaId = 1;
         Match match = new Match();
@@ -124,7 +124,7 @@ public class MatchServiceTest {
     }
 
     @Test
-    public void testFindById() {
+    void testFindById() {
         Integer id = 1;
 
         when(matchRepository.findById(id)).thenReturn(Optional.empty());

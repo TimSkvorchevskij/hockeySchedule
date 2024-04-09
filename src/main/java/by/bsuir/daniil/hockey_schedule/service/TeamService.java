@@ -115,7 +115,7 @@ public class TeamService {
     }
 
     @AspectAnnotation
-    public List<TeamDTO> addMultipleCommands(final ArrayList<Team> teamList) {
-        return teamList.stream().map(this::addTeam).collect(Collectors.toList());
+    public List<TeamDTO> addMultipleCommands(final List<Team> teamList) {
+        return teamList.stream().map(this::addTeam).toList();
     }
 }

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ArenaServiceTest {
+class ArenaServiceTest {
     @Mock
     private ArenaRepository arenaRepository;
     @Mock
@@ -39,7 +39,7 @@ public class ArenaServiceTest {
     }
 
     @Test
-    public void testGetAllArenas() {
+    void testGetAllArenas() {
         List<Arena> arenas = new ArrayList<>();
         arenas.add(new Arena());
         arenas.add(new Arena());
@@ -54,7 +54,7 @@ public class ArenaServiceTest {
     }
 
     @Test
-    public void testGetArenaById() {
+    void testGetArenaById() {
         Arena arena = new Arena();
         arena.setId(1);
         arena.setCity("TestCity");
@@ -81,7 +81,7 @@ public class ArenaServiceTest {
     }
 
     @Test
-    public void testGetArenaByCapacity() {
+    void testGetArenaByCapacity() {
         Integer minValue = 10;
         Integer maxValue = 20;
         List<Arena> arenas = new ArrayList<>();
@@ -105,7 +105,7 @@ public class ArenaServiceTest {
     }
 
     @Test
-    public void testDeleteArena() {
+    void testDeleteArena() {
         Arena arena = new Arena();
         arena.setId(1);
         Match match1 = new Match();
@@ -129,7 +129,7 @@ public class ArenaServiceTest {
     }
 
     @Test
-    public void testDeleteArenaError() {
+    void testDeleteArenaError() {
         when(arenaRepository.findById(1)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> {
             arenaService.deleteArena(1);
@@ -137,7 +137,7 @@ public class ArenaServiceTest {
     }
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         // Готовим данные для теста
         Arena arena = new Arena();
         arena.setId(1);
@@ -162,7 +162,7 @@ public class ArenaServiceTest {
     }
 
     @Test
-    public void testCreateArena() {
+    void testCreateArena() {
         // Arrange
         Arena arena = new Arena();
         arena.setId(1);
@@ -182,7 +182,7 @@ public class ArenaServiceTest {
     }
 
     @Test
-    public void testCreateArenaEmptyCity() {
+    void testCreateArenaEmptyCity() {
         Arena arena = new Arena();
         arena.setId(1);
 

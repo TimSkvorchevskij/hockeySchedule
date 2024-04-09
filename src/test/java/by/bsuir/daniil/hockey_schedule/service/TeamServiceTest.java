@@ -24,7 +24,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class TeamServiceTest {
+class TeamServiceTest {
 
     @Mock
     private TeamRepository teamRepository;
@@ -70,7 +70,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void deleteTeamTest() {
+    void deleteTeamTest() {
         // Arrange
         Integer teamId = 1;
         Team team = new Team();
@@ -102,7 +102,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void deleteTeamTestExceptionResourceNotFound() {
+    void deleteTeamTestExceptionResourceNotFound() {
         Integer teamId = 1;
         when(teamRepository.findById(teamId)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> teamService.deleteTeam(teamId));
@@ -177,7 +177,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void testDelMatchInMatchList() {
+    void testDelMatchInMatchList() {
         Integer teamId = 1;
         Integer matchId = 1;
 
@@ -211,7 +211,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void testAddMultipleCommands() {
+    void testAddMultipleCommands() {
         Team team1 = new Team();
         team1.setId(1);
         Team team2 = new Team();
