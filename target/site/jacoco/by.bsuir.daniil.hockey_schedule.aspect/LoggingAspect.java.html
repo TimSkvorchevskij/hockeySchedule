@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoggingAspect.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">hockeySchedule</a> &gt; <a href="index.source.html" class="el_package">by.bsuir.daniil.hockey_schedule.aspect</a> &gt; <span class="el_source">LoggingAspect.java</span></div><h1>LoggingAspect.java</h1><pre class="source lang-java linenums">package by.bsuir.daniil.hockey_schedule.aspect;
+
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+
+import java.util.Arrays;
+
+@Aspect
+@Component
+<span class="nc" id="L17">public class LoggingAspect {</span>
+<span class="nc" id="L18">    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingAspect.class);</span>
+    @Pointcut(&quot;execution(* by.bsuir.daniil.hockey_schedule.service.*.*(..))&quot;)
+<span class="nc" id="L20">    private void allServiceMethods() { }</span>
+
+    @Pointcut(&quot;@annotation(AspectAnnotation)&quot;)
+<span class="nc" id="L23">    public void callAtMyServiceAnnotation() { }</span>
+
+    @Before(value = &quot;callAtMyServiceAnnotation()&quot;)
+    public void logBefore(final JoinPoint joinPoint) {
+<span class="nc" id="L27">        Object[] args = joinPoint.getArgs();</span>
+<span class="nc" id="L28">        String methodName = joinPoint + &quot; &quot;</span>
+<span class="nc" id="L29">                + joinPoint.getSignature().getName();</span>
+<span class="nc" id="L30">        LOGGER.info(&quot;&gt;&gt; {}() - {}\n&quot;, methodName, Arrays.toString(args));</span>
+<span class="nc" id="L31">    }</span>
+
+    @AfterReturning(value = &quot;callAtMyServiceAnnotation()&quot;, returning = &quot;result&quot;)
+    public void logAfter(final JoinPoint joinPoint, final Object result) {
+<span class="nc" id="L35">        String methodName = joinPoint.toString();</span>
+<span class="nc" id="L36">        LOGGER.info(&quot;&lt;&lt; {}() - {}&quot;, methodName, result);</span>
+<span class="nc" id="L37">    }</span>
+
+    @AfterThrowing(pointcut = &quot;callAtMyServiceAnnotation()&quot;, throwing = &quot;exception&quot;)
+    public void logException(final JoinPoint joinPoint, final Throwable exception) {
+<span class="nc" id="L41">        String methodName = joinPoint.toString();</span>
+<span class="nc" id="L42">        LOGGER.error(&quot;&lt;&lt; {}() - {}&quot;, methodName, exception.getMessage());</span>
+<span class="nc" id="L43">    }</span>
+    @PostConstruct
+    public void initAspect() {
+<span class="nc" id="L46">        LOGGER.info(&quot;Aspect is initialized&quot;);</span>
+<span class="nc" id="L47">    }</span>
+
+    @PreDestroy
+    public void destroyAspect() {
+<span class="nc" id="L51">        LOGGER.info(&quot;Aspect is destroyed&quot;);</span>
+<span class="nc" id="L52">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

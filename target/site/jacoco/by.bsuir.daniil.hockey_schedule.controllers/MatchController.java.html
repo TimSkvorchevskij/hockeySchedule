@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MatchController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">hockeySchedule</a> &gt; <a href="index.source.html" class="el_package">by.bsuir.daniil.hockey_schedule.controllers</a> &gt; <span class="el_source">MatchController.java</span></div><h1>MatchController.java</h1><pre class="source lang-java linenums">package by.bsuir.daniil.hockey_schedule.controllers;
+
+import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithArena;
+import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithTeamAndArena;
+import by.bsuir.daniil.hockey_schedule.model.Match;
+import by.bsuir.daniil.hockey_schedule.service.MatchService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Tag(name = &quot;MatchController&quot;,
+        description = &quot;You can add edit and view information about matches&quot;)
+//@AllArgsConstructor
+@RestController
+@RequestMapping(&quot;/api/v1/match&quot;)
+<span class="nc" id="L22">@AllArgsConstructor</span>
+@CrossOrigin(origins = &quot;http://localhost:3000&quot;)
+public class MatchController {
+
+    private MatchService matchService;
+
+    @Operation(summary = &quot;Просмотр всех матчей&quot;,
+            description = &quot;Позволяет просмотреть все матчи&quot;)
+    @GetMapping
+    public ResponseEntity&lt;List&lt;MatchDTOWithTeamAndArena&gt;&gt; getAllMatches() {
+<span class="nc" id="L32">        List&lt;MatchDTOWithTeamAndArena&gt; matchDTOWithTeamAndArenaList = matchService.getAllMatches();</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (matchDTOWithTeamAndArenaList.isEmpty()) {</span>
+<span class="nc" id="L34">            return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT);</span>
+        } else {
+<span class="nc" id="L36">            return new ResponseEntity&lt;&gt;(matchDTOWithTeamAndArenaList, HttpStatus.OK);</span>
+        }
+    }
+
+    @Operation(summary = &quot;Поиск по ID&quot;,
+            description = &quot;Позволяет просмотреть информацию о матче по ID&quot;)
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;MatchDTOWithTeamAndArena&gt; findById(
+            @PathVariable @Parameter(description = &quot;ID матча который нужно найти&quot;) final String id) {
+<span class="nc" id="L45">        return new ResponseEntity&lt;&gt;(matchService.findById(Integer.parseInt(id)), HttpStatus.OK);</span>
+    }
+
+    @Operation(summary = &quot;Регистарция матча&quot;,
+            description = &quot;Позволяет зарегистрировать новый матч&quot;)
+    @PostMapping(&quot;/create&quot;)
+    public ResponseEntity&lt;MatchDTOWithTeamAndArena&gt; addMatch(
+            @RequestBody @Parameter(description = &quot;Json объект нового матча&quot;) final Match match) {
+<span class="nc" id="L53">        return new ResponseEntity&lt;&gt;(matchService.addMatch(match), HttpStatus.OK);</span>
+    }
+
+    @Operation(summary = &quot;Удаление матча&quot;,
+            description = &quot;Позволяет удлаить&quot;)
+    @DeleteMapping(&quot;/delete&quot;)
+    public ResponseEntity&lt;HttpStatus&gt; deleteMatch(
+            @RequestParam @Parameter(description = &quot;ID матча который нужно удалить&quot;) final Integer matchId) {
+<span class="nc" id="L61">        matchService.deleteMatch(matchId);</span>
+<span class="nc" id="L62">        return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT);</span>
+    }
+
+    @Operation(summary = &quot;Установлка арены&quot;,
+            description = &quot;Позволяет установить новую арену для матча&quot;)
+    @PutMapping(&quot;/setArena&quot;)
+    public ResponseEntity&lt;MatchDTOWithArena&gt; setNewArenaId(
+            @RequestParam @Parameter(description = &quot;ID матча которому нужно установить новую арену&quot;) final Integer matchId,
+            @RequestParam @Parameter(description = &quot;ID арены&quot;) final Integer newArenaId) {
+<span class="nc" id="L71">        return new ResponseEntity&lt;&gt;(matchService.setNewArena(matchId, newArenaId), HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

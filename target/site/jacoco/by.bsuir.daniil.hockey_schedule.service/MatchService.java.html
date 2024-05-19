@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MatchService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">hockeySchedule</a> &gt; <a href="index.source.html" class="el_package">by.bsuir.daniil.hockey_schedule.service</a> &gt; <span class="el_source">MatchService.java</span></div><h1>MatchService.java</h1><pre class="source lang-java linenums">package by.bsuir.daniil.hockey_schedule.service;
+
+import by.bsuir.daniil.hockey_schedule.aspect.AspectAnnotation;
+import by.bsuir.daniil.hockey_schedule.cache.CacheManager;
+import by.bsuir.daniil.hockey_schedule.dto.ConvertDTOClasses;
+
+import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithArena;
+import by.bsuir.daniil.hockey_schedule.dto.match.MatchDTOWithTeamAndArena;
+import by.bsuir.daniil.hockey_schedule.exception.BadRequestException;
+import by.bsuir.daniil.hockey_schedule.exception.ResourceNotFoundException;
+import by.bsuir.daniil.hockey_schedule.model.Arena;
+import by.bsuir.daniil.hockey_schedule.model.Match;
+import by.bsuir.daniil.hockey_schedule.model.Team;
+import by.bsuir.daniil.hockey_schedule.repository.ArenaRepository;
+import by.bsuir.daniil.hockey_schedule.repository.MatchRepository;
+import by.bsuir.daniil.hockey_schedule.repository.TeamRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+
+<span class="fc" id="L25">@AllArgsConstructor</span>
+@Component
+@Transactional
+public class MatchService {
+    private final MatchRepository matchRepository;
+    private final ArenaRepository arenaRepository;
+    private final TeamRepository teamRepository;
+    private final CacheManager&lt;String, Object&gt; cacheManager;
+    private static final String MATCH_DTO = &quot;matchDTOWithTeamAndArena_&quot;;
+    private static final String DOESNT_EXIST = &quot;Match doesn't exist ID = &quot;;
+
+    public List&lt;MatchDTOWithTeamAndArena&gt; getAllMatches() {
+<span class="fc" id="L37">        List&lt;MatchDTOWithTeamAndArena&gt; matchDTOWithTeamAndArenaList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (Match match : matchRepository.findAll()) {</span>
+<span class="fc" id="L39">            MatchDTOWithTeamAndArena matchDTOWithTeamAndArena = ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match);</span>
+<span class="fc" id="L40">            matchDTOWithTeamAndArenaList.add(matchDTOWithTeamAndArena);</span>
+<span class="fc" id="L41">            cacheManager.put(MATCH_DTO + match.getId().toString(), matchDTOWithTeamAndArena);</span>
+<span class="fc" id="L42">        }</span>
+<span class="fc" id="L43">        return matchDTOWithTeamAndArenaList;</span>
+    }
+
+    @AspectAnnotation
+    public MatchDTOWithTeamAndArena addMatch(final Match newMatch) {
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (newMatch.getTeamList() != null) {</span>
+<span class="fc" id="L49">            List&lt;Team&gt; teamList = newMatch.getTeamList();</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            if (teamList.size() &gt; 2) {</span>
+<span class="fc" id="L51">                throw new BadRequestException(&quot;A match can contain only two teams&quot;);</span>
+            }
+<span class="fc" id="L53">            List&lt;Team&gt; newTeamList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            for (Team team : teamList) {</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">                if (team.getId() == null) {</span>
+<span class="fc" id="L56">                    newTeamList.add(teamRepository.save(team));</span>
+                } else {
+<span class="nc" id="L58">                    teamRepository.findById(team.getId()).ifPresent(newTeamList::add);</span>
+                }
+<span class="fc" id="L60">            }</span>
+<span class="fc" id="L61">            newMatch.setTeamList(newTeamList);</span>
+        }
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (newMatch.getArena() != null) {</span>
+<span class="nc" id="L64">            Arena arena = newMatch.getArena();</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">            if (arena.getId() == null) {</span>
+<span class="nc" id="L66">                arenaRepository.save(arena);</span>
+            } else {
+<span class="nc" id="L68">                newMatch.setArena(null);</span>
+<span class="nc" id="L69">                arenaRepository.findById(arena.getId()).ifPresent(newMatch::setArena);</span>
+            }
+        }
+<span class="fc" id="L72">        MatchDTOWithTeamAndArena matchDTOWithTeamAndArena =</span>
+<span class="fc" id="L73">                ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.save(newMatch));</span>
+<span class="fc" id="L74">        cacheManager.put(MATCH_DTO + newMatch.getId(), matchDTOWithTeamAndArena);</span>
+<span class="fc" id="L75">        return matchDTOWithTeamAndArena;</span>
+    }
+
+    @AspectAnnotation
+    public void deleteMatch(final Integer delMatchId) {
+<span class="fc" id="L80">        Optional&lt;Match&gt; matchOptional = matchRepository.findById(delMatchId);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (matchOptional.isPresent()) {</span>
+<span class="fc" id="L82">            matchRepository.deleteById(delMatchId);</span>
+
+        } else {
+<span class="fc" id="L85">            throw new ResourceNotFoundException(DOESNT_EXIST + delMatchId);</span>
+        }
+<span class="fc" id="L87">        cacheManager.remove(MATCH_DTO + delMatchId);</span>
+<span class="fc" id="L88">    }</span>
+
+    @AspectAnnotation
+    public MatchDTOWithArena setNewArena(final Integer matchId, final Integer newArenaId) {
+<span class="fc" id="L92">        Match match = matchRepository.findById(matchId).orElseThrow(()</span>
+<span class="fc" id="L93">                -&gt; new ResourceNotFoundException(DOESNT_EXIST + matchId));</span>
+<span class="fc" id="L94">        Arena arena = arenaRepository.findById(newArenaId).orElseThrow(()</span>
+<span class="fc" id="L95">                -&gt; new ResourceNotFoundException(&quot;Arena with id: &quot; + newArenaId + &quot; doesnt exist&quot;));</span>
+<span class="fc" id="L96">        match.setArena(arena);</span>
+<span class="fc" id="L97">        matchRepository.save(match);</span>
+<span class="fc" id="L98">        cacheManager.put(MATCH_DTO + matchId, ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(match));</span>
+<span class="fc" id="L99">        return ConvertDTOClasses.convertToMatchDTOWithArena(match);</span>
+    }
+
+    @AspectAnnotation
+    public MatchDTOWithTeamAndArena findById(final Integer id) {
+<span class="fc" id="L104">        Object cachedData = cacheManager.get(MATCH_DTO + id.toString());</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (cachedData != null) {</span>
+<span class="fc" id="L106">            return (MatchDTOWithTeamAndArena) cachedData;</span>
+        } else {
+<span class="fc" id="L108">            MatchDTOWithTeamAndArena matchDTOWithTeamAndArena =</span>
+<span class="fc" id="L109">                    ConvertDTOClasses.convertToMatchDTOWithTeamAndArena(matchRepository.findById(id)</span>
+<span class="fc" id="L110">                            .orElseThrow(() -&gt; new ResourceNotFoundException(DOESNT_EXIST + id)));</span>
+<span class="fc" id="L111">            cacheManager.put(MATCH_DTO + id, matchDTOWithTeamAndArena);</span>
+<span class="fc" id="L112">            return matchDTOWithTeamAndArena;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

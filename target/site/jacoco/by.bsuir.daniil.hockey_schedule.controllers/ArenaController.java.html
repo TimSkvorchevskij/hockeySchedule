@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArenaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">hockeySchedule</a> &gt; <a href="index.source.html" class="el_package">by.bsuir.daniil.hockey_schedule.controllers</a> &gt; <span class="el_source">ArenaController.java</span></div><h1>ArenaController.java</h1><pre class="source lang-java linenums">package by.bsuir.daniil.hockey_schedule.controllers;
+
+import by.bsuir.daniil.hockey_schedule.aspect.AspectAnnotation;
+import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTO;
+import by.bsuir.daniil.hockey_schedule.dto.arena.ArenaDTOWithMatch;
+import by.bsuir.daniil.hockey_schedule.model.Arena;
+import by.bsuir.daniil.hockey_schedule.service.ArenaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Tag(name = &quot;ArenaController&quot;,
+        description = &quot;You can add edit and view information about arenas&quot;)
+<span class="nc" id="L20">@AllArgsConstructor</span>
+@RestController
+@RequestMapping(&quot;api/v1/arena&quot;)
+@CrossOrigin(origins = &quot;http://localhost:3000&quot;)
+public class ArenaController {
+
+    private ArenaService arenaService;
+
+    @Operation(summary = &quot;Просмотр всех арен&quot;,
+            description = &quot;Позволяет просмотреть все арены&quot;)
+    @GetMapping
+    public ResponseEntity&lt;List&lt;ArenaDTOWithMatch&gt;&gt; getAllArenas() {
+<span class="nc" id="L32">        List&lt;ArenaDTOWithMatch&gt; arenaDTOWithMatchList = arenaService.getAllArenas();</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (arenaDTOWithMatchList.isEmpty()) {</span>
+<span class="nc" id="L34">            return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT);</span>
+        } else {
+<span class="nc" id="L36">            return new ResponseEntity&lt;&gt;(arenaDTOWithMatchList, HttpStatus.OK);</span>
+        }
+    }
+
+    @Operation(summary = &quot;Получение арены по вместительности&quot;,
+            description = &quot;Позволяет просмотреть список арен с указанной вместительностью&quot;)
+    @GetMapping(&quot;/search/capacity&quot;)
+    public ResponseEntity&lt;List&lt;ArenaDTO&gt;&gt; getArenaByCapacity(
+            @RequestParam(value = &quot;moreThan&quot;, required = false)
+            @Parameter(description = &quot;Минимальное значение вместительности&quot;) final Integer minValue,
+            @RequestParam(value = &quot;lessThan&quot;, required = false)
+            @Parameter(description = &quot;Максимальное значение вместительности&quot;) final Integer maxValue) {
+<span class="nc" id="L48">        List&lt;ArenaDTO&gt; arenaDTOList = arenaService.getArenaByCapacity(minValue, maxValue);</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (arenaDTOList.isEmpty()) {</span>
+<span class="nc" id="L50">            return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT);</span>
+        } else {
+<span class="nc" id="L52">            return new ResponseEntity&lt;&gt;(arenaDTOList, HttpStatus.OK);</span>
+        }
+    }
+
+    @Operation(summary = &quot;Просмотр по ID&quot;,
+            description = &quot;Позволяет просмотреть арену по ID&quot;)
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;ArenaDTO&gt; getArenaById(
+            @PathVariable @Parameter(description = &quot;ID арены которую нужно найти&quot;) final Integer id) {
+<span class="nc" id="L61">        return new ResponseEntity&lt;&gt;(arenaService.getArenaById(id), HttpStatus.OK);</span>
+    }
+
+    @Operation(summary = &quot;Регистрация арены&quot;,
+            description = &quot;Позволяет создать новвую арену&quot;)
+    @PostMapping(&quot;/create&quot;)
+    @AspectAnnotation
+    public ResponseEntity&lt;ArenaDTO&gt; createArena(
+            @RequestBody @Parameter(description = &quot;Json объект новой арены&quot;) final Arena arena) {
+<span class="nc" id="L70">        return new ResponseEntity&lt;&gt;(arenaService.createArena(arena), HttpStatus.CREATED);</span>
+    }
+
+    @Operation(summary = &quot;Удаление арены&quot;,
+            description = &quot;Позволяет удлаить арену по ID&quot;)
+    @DeleteMapping(&quot;/delete&quot;)
+    public ResponseEntity&lt;HttpStatus&gt; deleteArena(
+            @RequestParam @Parameter(description = &quot;ID арены которую нужно удалить&quot;) final Integer id) {
+<span class="nc" id="L78">        arenaService.deleteArena(id);</span>
+<span class="nc" id="L79">        return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT);</span>
+    }
+
+    @Operation(summary = &quot;Изменение данных арены&quot;,
+            description = &quot;Позволяет изменить арены&quot;)
+    @PutMapping(&quot;/change&quot;)
+    public ResponseEntity&lt;ArenaDTO&gt; update(
+            @RequestParam @Parameter(description = &quot;ID арены в которой нужно изменить параметры&quot;) final Integer arenaId,
+            @RequestParam(required = false) @Parameter(description = &quot;Новый город&quot;) final String city,
+            @RequestParam(required = false) @Parameter(description = &quot;Новая вместительность&quot;) final Integer capacity) {
+<span class="nc" id="L89">        return new ResponseEntity&lt;&gt;(arenaService.update(arenaId, city, capacity), HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
