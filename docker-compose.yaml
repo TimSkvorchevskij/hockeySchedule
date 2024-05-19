@@ -5,9 +5,9 @@ services:
     image: postgres
     container_name: database
     environment:
-      POSTGRES_USER: bobr
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: hockey_schedule
+      POSTGRES_USER: ${USERNAME}
+      POSTGRES_PASSWORD: ${PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - hockey_schedule:/var/lib/postgresql/data
     networks:
