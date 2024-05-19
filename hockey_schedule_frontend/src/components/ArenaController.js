@@ -3,6 +3,8 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { Container, Paper, Button } from '@mui/material';
 
+const apiUrl = "https://hockeyschedule.onrender.com";
+
 export function AddArena() {
     const paperStyle = {padding:"20px 20px", width:600, margin:"20px auto"}
     const [city,setCity] = React.useState()
@@ -12,7 +14,7 @@ export function AddArena() {
         e.preventDefault()
         const newArena = {city,capacity}
         console.log(newArena)
-        fetch("http://localhost:8080/api/v1/arena/create",{
+        fetch(`${apiUrl}/api/v1/arena/create`,{
             method:"POST",
             headers:{"Content-Type":"application/json"},
             body:JSON.stringify(newArena)
@@ -55,7 +57,7 @@ export function GetArenaById() {
     const [arena, setArena] = React.useState(null);
 
     const findArenaById = (id) => {
-        fetch(("http://localhost:8080/api/v1/arena/" + id), {
+        fetch((`${apiUrl}/api/v1/arena/` + id), {
             method: "GET"
         })
         .then(res => {
@@ -103,7 +105,7 @@ export function GetArenaByCapacity() {
 
     const findArenaByCapacity = (min, max) => {
 
-        fetch(`http://localhost:8080/api/v1/arena/search/capacity?moreThan=${min}&lessThan=${max}`, {
+        fetch(`${apiUrl}/api/v1/arena/search/capacity?moreThan=${min}&lessThan=${max}`, {
             method: "GET"
         })
         .then(res => {
@@ -156,7 +158,7 @@ export function DeleteArena(){
     const [arenaId,setArenaId] = React.useState([])
 
     const handleDeleteArena = (id) => {
-        fetch(`http://localhost:8080/api/v1/arena/delete?id=${id}`, {
+        fetch(`${apiUrl}/api/v1/arena/delete?id=${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -206,7 +208,7 @@ export function UpdateArena() {
 
     const updateArenaParams = (id,city, capacity) => {
 
-        fetch(`http://localhost:8080/api/v1/arena/change?arenaId=${id}&city=${city}&capacity=${capacity}`, {
+        fetch(`${apiUrl}/api/v1/arena/change?arenaId=${id}&city=${city}&capacity=${capacity}`, {
             method: "PUT"
         })
         .then(res => {
@@ -260,7 +262,7 @@ export function GetAllArenas(){
     const [arenas,setArenas] = React.useState([])
     
     const refreshListArenas = () => {
-        fetch("http://localhost:8080/api/v1/arena", {
+        fetch(`${apiUrl}/api/v1/arena`, {
             method: "GET"
         })
         .then(res => res.json())

@@ -4,6 +4,8 @@ import TextField from '@mui/material/TextField';
 import { Container, Paper, Button } from '@mui/material';
 import moment from 'moment';
 
+const apiUrl = "https://hockeyschedule.onrender.com";
+
 export function AddTeam() {
     const paperStyle = {padding:"20px 20px", width:600, margin:"20px auto"}
     const [teamName,setTeamName] = React.useState()
@@ -13,7 +15,7 @@ export function AddTeam() {
         const newTeam = {teamName}
         console.log('New team:', newTeam);
 
-        fetch("http://localhost:8080/api/v1/team/create",{
+        fetch(`${apiUrl}/api/v1/team/create`,{
             method:"POST",
             headers:{"Content-Type":"application/json"},
             body:JSON.stringify(newTeam)
@@ -60,7 +62,7 @@ export function GetTeamById() {
     const [team, setTeam] = React.useState(null);
 
     const findTeamById = (id) => {
-        fetch(("http://localhost:8080/api/v1/team/" + id), {
+        fetch((`${apiUrl}/api/v1/team/` + id), {
             method: "GET"
         })
         .then(res => {
@@ -118,7 +120,7 @@ export function DeleteTeam(){
     const [teamId,setTeamId] = React.useState([])
 
     const handleDeleteTeam = (id) => {
-        fetch(`http://localhost:8080/api/v1/team/delete?teamId=${id}`, {
+        fetch(`${apiUrl}/api/v1/team/delete?teamId=${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -165,7 +167,7 @@ export function GetAllTeams(){
     const [teams,setTeams] = React.useState([])
     
     const refreshListTeams = () => {
-        fetch("http://localhost:8080/api/v1/team", {
+        fetch(`${apiUrl}/api/v1/team`, {
             method: "GET"
         })
         .then(res => res.json())
@@ -219,7 +221,7 @@ export function AddMatchInMatchList() {
 
     const addMatchInMatchList = () => {
 
-        fetch(`http://localhost:8080/api/v1/team/addMatch?teamId=${teamId}&matchId=${matchId}`, {
+        fetch(`${apiUrl}/api/v1/team/addMatch?teamId=${teamId}&matchId=${matchId}`, {
             method: "PUT"
         })
         .then(res => {
@@ -272,7 +274,7 @@ export function DeleteMatchInMatchList() {
 
     const deleteMatchInMatchList = () => {
 
-        fetch(`http://localhost:8080/api/v1/team/delMatch?teamId=${teamId}&matchId=${matchId}`, {
+        fetch(`${apiUrl}/api/v1/team/delMatch?teamId=${teamId}&matchId=${matchId}`, {
             method: "PUT"
         })
         .then(res => {

@@ -5,6 +5,8 @@ import { Container, Paper, Button} from '@mui/material';
 import { BasicDatePicker, BasicTimePicker }  from './dataTime';
 import moment from 'moment';
 
+const apiUrl = "https://hockeyschedule.onrender.com";
+
 export function AddMatch() {
     const paperStyle = {padding:"20px 20px", width:600, margin:"20px auto"}
     const [selectedDate, setSelectedDate] = React.useState(null); // Состояние для выбранной даты
@@ -26,7 +28,7 @@ export function AddMatch() {
     };
 
     const findArenaById = (id) => {
-        fetch(("http://localhost:8080/api/v1/arena/" + id), {
+        fetch((`${apiUrl}/api/v1/arena/` + id), {
             method: "GET"
         })
         .then(res => {
@@ -45,7 +47,7 @@ export function AddMatch() {
     };
 
     const findTeamById = (id, teamType) => {
-        fetch(`http://localhost:8080/api/v1/team/${id}`, {
+        fetch(`${apiUrl}/api/v1/team/${id}`, {
             method: "GET"
         })
         .then(res => {
@@ -98,7 +100,7 @@ export function AddMatch() {
         
         console.log('New match:', newMatch);
     
-        fetch("http://localhost:8080/api/v1/match/create", {
+        fetch(`${apiUrl}/api/v1/match/create`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newMatch)
@@ -208,7 +210,7 @@ export function GetMatchById() {
     const [match, setMatch] = React.useState(null);
 
     const findMatchById = (id) => {
-        fetch(("http://localhost:8080/api/v1/match/" + id), {
+        fetch((`${apiUrl}/api/v1/match/` + id), {
             method: "GET"
         })
         .then(res => {
@@ -280,7 +282,7 @@ export function GetAllMatches(){
     const [matches,setMatches] = React.useState([])
     
     const refreshListMatches = () => {
-        fetch("http://localhost:8080/api/v1/match", {
+        fetch(`${apiUrl}/api/v1/match`, {
             method: "GET"
         })
         .then(res => res.json())
@@ -348,7 +350,7 @@ export function DeleteMatch(){
 
     const handleDeleteMatch = (id) => {
         console.log(id);
-        fetch(`http://localhost:8080/api/v1/match/delete?matchId=${id}`, {
+        fetch(`${apiUrl}/api/v1/match/delete?matchId=${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -398,7 +400,7 @@ export function SetNewArenaForMatch() {
 
     const setNewArena = () => {
 
-        fetch(`http://localhost:8080/api/v1/match/setArena?matchId=${matchId}&newArenaId=${arenaId}`, {
+        fetch(`${apiUrl}api/v1/match/setArena?matchId=${matchId}&newArenaId=${arenaId}`, {
             method: "PUT"
         })
         .then(res => {
