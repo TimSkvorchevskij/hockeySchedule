@@ -80,9 +80,8 @@ public class MatchService {
         Optional<Match> matchOptional = matchRepository.findById(delMatchId);
         if (matchOptional.isPresent()) {
             matchRepository.deleteById(delMatchId);
-            // Дополнительные действия...
+
         } else {
-            // Если матч не найден, бросаем исключение или выполняем другую логику
             throw new ResourceNotFoundException(DOESNT_EXIST + delMatchId);
         }
         cacheManager.remove(MATCH_DTO + delMatchId);

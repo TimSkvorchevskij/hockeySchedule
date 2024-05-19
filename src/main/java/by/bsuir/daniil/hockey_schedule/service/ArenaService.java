@@ -31,7 +31,7 @@ public class ArenaService {
     private static final String ARENA_DTO = "arenaDTO";
     private static final String DOESNT_EXIST = "Arena doesn't exist ID = ";
 
-
+    @RequestCounterAnnotation
     public List<ArenaDTOWithMatch> getAllArenas() {
         List<ArenaDTOWithMatch> arenaDTOWithMatchList = new ArrayList<>();
         List<Arena> arenas = arenaRepository.findAllWithMatchListAndTeamList();

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CounterAspect {
     RequestCounter requestCounter = new RequestCounter();
-    private static final Logger logger = LoggerFactory.getLogger(CounterAspect.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CounterAspect.class);
 
     @Pointcut("@annotation(RequestCounterAnnotation)")
     public void callAtMyServiceAnnotation() { }
@@ -23,6 +23,6 @@ public class CounterAspect {
         requestCounter.increment();
         String methodName = joinPoint + " "
                 + joinPoint.getSignature().getName();
-        logger.info("Request Counter: {} - {}\n", requestCounter.getCount(), methodName);
+        LOGGER.info("Request Counter: {} - {}\n", requestCounter.getCount(), methodName);
     }
 }

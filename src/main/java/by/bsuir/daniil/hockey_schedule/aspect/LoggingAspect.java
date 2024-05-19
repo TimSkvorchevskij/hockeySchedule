@@ -15,7 +15,7 @@ import java.util.Arrays;
 @Aspect
 @Component
 public class LoggingAspect {
-    private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingAspect.class);
     @Pointcut("execution(* by.bsuir.daniil.hockey_schedule.service.*.*(..))")
     private void allServiceMethods() { }
 
@@ -27,27 +27,27 @@ public class LoggingAspect {
         Object[] args = joinPoint.getArgs();
         String methodName = joinPoint + " "
                 + joinPoint.getSignature().getName();
-        logger.info(">> {}() - {}\n", methodName, Arrays.toString(args));
+        LOGGER.info(">> {}() - {}\n", methodName, Arrays.toString(args));
     }
 
     @AfterReturning(value = "callAtMyServiceAnnotation()", returning = "result")
     public void logAfter(final JoinPoint joinPoint, final Object result) {
         String methodName = joinPoint.toString();
-        logger.info("<< {}() - {}", methodName, result);
+        LOGGER.info("<< {}() - {}", methodName, result);
     }
 
     @AfterThrowing(pointcut = "callAtMyServiceAnnotation()", throwing = "exception")
     public void logException(final JoinPoint joinPoint, final Throwable exception) {
         String methodName = joinPoint.toString();
-        logger.error("<< {}() - {}", methodName, exception.getMessage());
+        LOGGER.error("<< {}() - {}", methodName, exception.getMessage());
     }
     @PostConstruct
     public void initAspect() {
-        logger.info("Aspect is initialized");
+        LOGGER.info("Aspect is initialized");
     }
 
     @PreDestroy
     public void destroyAspect() {
-        logger.info("Aspect is destroyed");
+        LOGGER.info("Aspect is destroyed");
     }
 }

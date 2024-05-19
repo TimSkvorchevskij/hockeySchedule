@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    container_name: database
+    environment:
+      POSTGRES_USER: bobr
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: hockey_schedule
+    volumes:
+      - hockey_schedule:/var/lib/postgresql/data
+    networks:
+      - hockey_schedule_net
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  backend:
+    image: hockey_schedule_backend
+    container_name: backend
+    networks:
+      - hockey_schedule_net
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+        
+  frontend:
+    image: hockey_schedule_frontend
+    container_name: frontend
+    networks:
+      - hockey_schedule_net
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+      - db
+
+volumes:
+  hockey_schedule:
+
+
+networks:
+  hockey_schedule_net:

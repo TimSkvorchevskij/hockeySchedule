@@ -2,6 +2,7 @@ package by.bsuir.daniil.hockey_schedule.exception;
 
 import java.util.Date;
 
+import by.bsuir.daniil.hockey_schedule.aspect.AspectAnnotation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 @Component
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @AspectAnnotation
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorMessage> resourceNotFoundException(final ResourceNotFoundException ex,
                                                                   final WebRequest request) {
@@ -25,6 +27,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
+    @AspectAnnotation
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorMessage> badRequestException(final BadRequestException ex,
                                                             final WebRequest request) {
@@ -35,7 +38,7 @@ public class GlobalExceptionHandler {
                 request.getDescription(false));
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
-
+    @AspectAnnotation
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> globalExceptionHandler(final Exception ex,
                                                                final WebRequest request) {
@@ -46,7 +49,7 @@ public class GlobalExceptionHandler {
                 request.getDescription(false));
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
+    @AspectAnnotation
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorMessage> httpMessageNotReadableException(final HttpMessageNotReadableException ex,
                                                                         final WebRequest request) {
