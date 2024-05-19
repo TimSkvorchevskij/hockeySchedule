@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/team")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class TeamController {
 
     private TeamService teamService;
